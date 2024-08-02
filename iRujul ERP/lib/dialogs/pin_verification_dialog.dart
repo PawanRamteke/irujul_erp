@@ -1,22 +1,24 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:get/get.dart';
+import 'package:irujul_erp/controllers/login_controller.dart';
 import 'package:irujul_erp/utils/colors.dart';
 import 'package:irujul_erp/utils/common_widgets/app_button.dart';
 
 class PinVerificationDialog extends StatelessWidget {
-  const PinVerificationDialog({super.key});
-
+  PinVerificationDialog({super.key});
+  LoginController loginController = Get.put(LoginController());
   @override
   Widget build(BuildContext context) {
     return Dialog(
       insetPadding: EdgeInsets.all(20),
       alignment: Alignment.center,
-      child: _dialogContent(),
+      child: _dialogContent(context),
     );
   }
 
-  _dialogContent() {
+  _dialogContent(BuildContext context) {
     return Container(
       height: 300,
       width: double.infinity,
@@ -36,19 +38,20 @@ class PinVerificationDialog extends StatelessWidget {
             margin: EdgeInsets.only(left: 5,right: 5),
             numberOfFields: 6,
             showFieldAsBox: true,
-            cursorColor: appGreenColor,
-            focusedBorderColor: appGreenColor,
+            cursorColor: appRedColor,
+            focusedBorderColor: appRedColor,
             textStyle: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             onCodeChanged: (code){
-
-            },
-            onSubmit: (code){
+              if(code.isNotEmpty) {
+                loginController.serverPin = loginController.serverPin + code;
+              } else {
+                loginController.serverPin = loginController.serverPin.substring(0, loginController.serverPin.length - 1);
+              }
             },
           ),
           SizedBox(height: 30,),
           AppButton(btnName: "Verify", width: 150, onPressed: (){
-            Get.back(closeOverlays: true);
-
+            loginController.verifyServerPinAPI(context);
           })
         ],
       ),

@@ -4,6 +4,7 @@ import 'package:flutter/painting.dart';
 import 'package:irujul_erp/utils/colors.dart';
 
 class AppTextField extends StatelessWidget {
+  final TextEditingController? controller;
   final String placeholder;
   final double? height;
   final Icon? icon;
@@ -12,6 +13,7 @@ class AppTextField extends StatelessWidget {
   final Function? onTap;
   AppTextField({
     super.key,
+    this.controller,
     required this.placeholder,
     this.height,
     this.icon,
@@ -24,6 +26,7 @@ class AppTextField extends StatelessWidget {
     return SizedBox(
       height: height ?? 50,
       child: TextField(
+        controller: controller,
         decoration: InputDecoration(
           border: InputBorder.none,
           labelText: placeholder,

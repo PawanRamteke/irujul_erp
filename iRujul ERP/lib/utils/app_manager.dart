@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class AppManager {
   static final AppManager shared = AppManager._internal();
+  String appUrl = "";
   factory AppManager() {
     return shared;
   }
@@ -31,5 +33,9 @@ class AppManager {
             )
         )
     );
+  }
+
+  static showToast(String message) {
+    Fluttertoast.showToast(msg: message, timeInSecForIosWeb: 3);
   }
 }

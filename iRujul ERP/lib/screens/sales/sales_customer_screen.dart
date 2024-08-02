@@ -83,7 +83,9 @@ class _SalesCustomerScreenState extends State<SalesCustomerScreen> {
                       SizedBox(height: 10,),
                       AppTextField(placeholder: "Branch", isDropDown: true,),
                       SizedBox(height: 20,),
-                      AppCheckboxButton(title: "Is InActive"),
+                      AppCheckboxButton(title: "Is InActive", isSelected: false, onTap: (){
+
+                      },),
                       SizedBox(height: 20,),
                       AppButton(btnName: "NEXT", width: 120, onPressed: (){
                         _animateToPage(1);
@@ -128,13 +130,13 @@ class _SalesCustomerScreenState extends State<SalesCustomerScreen> {
                       SizedBox(height: 10,),
                       AppTextField(placeholder: "Referred By"),
                       SizedBox(height: 10,),
-                      AppCheckboxButton(title: "As Ledger"),
+                      AppCheckboxButton(title: "As Ledger", isSelected: false,onTap: () {},),
                       SizedBox(height: 10,),
-                      AppCheckboxButton(title: "Allow Credit Sale"),
+                      AppCheckboxButton(title: "Allow Credit Sale", isSelected: false,onTap: () {},),
                       SizedBox(height: 10,),
-                      AppCheckboxButton(title: "Tax Exempted"),
+                      AppCheckboxButton(title: "Tax Exempted", isSelected: false,onTap: () {},),
                       SizedBox(height: 10,),
-                      AppCheckboxButton(title: "Hide Transferable Amount"),
+                      AppCheckboxButton(title: "Hide Transferable Amount", isSelected: false,onTap: () {},),
                       SizedBox(height: 30,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -190,7 +192,7 @@ class _SalesCustomerScreenState extends State<SalesCustomerScreen> {
                     SizedBox(height: 10,),
                     AppTextField(placeholder: "Remark/Note"),
                     SizedBox(height: 10,),
-                    AppCheckboxButton(title: "Allow Email"),
+                    AppCheckboxButton(title: "Allow Email", isSelected: false,onTap: () {},),
                     SizedBox(height: 30,),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -231,7 +233,7 @@ class _SalesCustomerScreenState extends State<SalesCustomerScreen> {
                     children: [
                       AppButton(btnName: "Verify", width: 100, height: 40, onPressed: (){}),
                       SizedBox(width: 10,),
-                      AppCheckboxButton(title: "Is OTP Verify")
+                      AppCheckboxButton(title: "Is OTP Verify", isSelected: false,onTap: () {},)
                     ],
                   ),
                   SizedBox(height: 10,),
@@ -241,7 +243,7 @@ class _SalesCustomerScreenState extends State<SalesCustomerScreen> {
                   SizedBox(height: 10,),
                   AppTextField(placeholder: "Phone Number 2"),
                   SizedBox(height: 10,),
-                  AppCheckboxButton(title: "Allow SMS"),
+                  AppCheckboxButton(title: "Allow SMS", isSelected: false,onTap: () {},),
                   SizedBox(height: 10,),
                   Container(
                     height: 100,
