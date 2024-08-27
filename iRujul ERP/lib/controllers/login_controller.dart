@@ -3,12 +3,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:irujul_erp/models/branch_model.dart';
+import 'package:irujul_erp/models/login_model.dart';
 import 'package:irujul_erp/utils/ApiManager/Repository/repository.dart';
 import 'package:irujul_erp/utils/ApiManager/prefernces.dart';
 import 'package:irujul_erp/utils/app_manager.dart';
 import 'package:irujul_erp/utils/common_widgets/app_button.dart';
 import 'package:irujul_erp/utils/common_widgets/app_loader.dart';
 import 'package:irujul_erp/utils/common_widgets/app_text_field.dart';
+import 'package:irujul_erp/utils/routes.dart';
 
 class LoginController extends GetxController {
   AppRepository appRepository = AppRepository();
@@ -20,20 +23,15 @@ class LoginController extends GetxController {
   Rx<bool> rememberMe = false.obs;
 
   List<String> arrCompany = [];
-  List<String> arrBranch = [];
+  List<BranchModel> arrBranch = [];
   String serverPin = "";
 
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
 
-  showCompanyDropDownList() {
-    AppManager.shared.showActionSheet(arrCompany, (index) => {
-
-    });
-  }
-
   showBranchDropDownList() {
-    AppManager.shared.showActionSheet(arrBranch, (index) => {
-
+    List<String> branches = arrBranch.expand((element) => {element.branchName ?? ""}).toList();
+    AppManager.shared.showActionSheet(branches,"Select Branch", (index) => {
+        branch.text = branches[index]
     });
   }
 
@@ -52,22 +50,27 @@ class LoginController extends GetxController {
           child: Column(
             children: [
               const Text(
-                  "Select Company and Branch",
+                  "Select Branch",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 18
                 ),
               ),
               SizedBox(height: 30,),
-              AppTextField(placeholder: "Company", isDropDown: true, onTap: (){
-                showCompanyDropDownList();
-              },),
-              SizedBox(height: 20,),
-              AppTextField(placeholder: "Branch", isDropDown: true, onTap: (){
+              AppTextField(controller: branch,placeholder: "Branch", isDropDown: true, onTap: (){
                 showBranchDropDownList();
               },),
-              SizedBox(height: 20,),
-              AppButton(btnName: "Continue", width: 200, onPressed: (){})
+              SizedBox(height: 30,),
+              AppButton(btnName: "Continue", width: 200, onPressed: (){
+                if(branch.text.isEmpty) {
+                  AppManager.showToast("Please select branch");
+                  return;
+                }
+                BranchModel selBranch = arrBranch.firstWhere((element) => element.branchName == branch.text!);
+                AppManager.shared.branchModel = selBranch;
+                Get.back(closeOverlays: true);
+                Get.offAllNamed(RouteName.dashboardScreen);
+              })
             ],
           ),
         ),
@@ -81,6 +84,11 @@ class LoginController extends GetxController {
     if(validateServerPin()) {
       AppLoader.show(context);
       dynamic response = await appRepository.verifyServerPinAPI(serverPin);
+      AppLoader.hide();
+      if(response == null) {
+        AppManager.showToast("Something went wrong. Please contact administrator");
+        return;
+      }
       if(response["error"] != null) {
         AppManager.showToast(response["error"]["message"]);
       } else {
@@ -93,7 +101,6 @@ class LoginController extends GetxController {
           AppManager.showToast("Something is wrong! Please try again.");
         }
       }
-      AppLoader.hide();
     }
   }
 
@@ -108,9 +115,10 @@ class LoginController extends GetxController {
       } else {
         if (response["status"] == 200 && response["Data"] != null) {
           AppManager.showToast(response["message"]);
-          await Preferences.saveAcceessToken(response["Data"]["access_token"]);
+          AppManager.shared.loginModel = LoginModel.fromJson(response["Data"]);
+          await Preferences.saveAcceessToken(AppManager.shared.loginModel!.accessToken!);
          // showSelectBranchView();
-          cardKey.currentState?.toggleCard();
+         // cardKey.currentState?.toggleCard();
           getUserRecordsApi("user_branch", context);
         }
       }
@@ -120,6 +128,18 @@ class LoginController extends GetxController {
   getUserRecordsApi(String module, BuildContext context) async {
     AppLoader.show(context);
     dynamic response = await appRepository.getRecordsAPI(module);
+    List<dynamic> arrData = response["Data"];
+    if(arrData != null) {
+      for (var element in arrData) {
+        arrBranch.add(BranchModel.fromJson(element));
+      }
+    }
+    if(arrBranch.length == 1) {
+      AppManager.shared.branchModel = arrBranch[0];
+      Get.offAllNamed(RouteName.dashboardScreen);
+    } else {
+      showSelectBranchView();
+    }
     AppLoader.hide();
   }
 

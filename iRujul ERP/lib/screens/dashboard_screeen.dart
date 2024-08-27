@@ -27,6 +27,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: primaryColor,
         title: SizedBox(
           height: 50,
           width: 200,
@@ -36,16 +37,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
       drawer: Drawer(
         child: _drawerMenu(),
       ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            SizedBox(height: 20,),
-            _tabBarMenus(),
-            SizedBox(height: 10,),
-            _menuOptions()
-          ],
-        ),
-      ),
+      bottomNavigationBar: Obx(() => BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        backgroundColor: primaryColor,
+        selectedItemColor: appRedColor,
+        items: const [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: "Home"
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.add_circle),
+              label: "Enquiries"
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.add_circle),
+              label: "Customer"
+          )
+        ],
+        currentIndex: dashboardController.selectedTabIndex.value,
+        onTap: (index) {
+          dashboardController.selectedTabIndex.value = index;
+          },
+      )),
+      body: Obx(()  => dashboardController.pages[dashboardController.selectedTabIndex.value])
     );
   }
 

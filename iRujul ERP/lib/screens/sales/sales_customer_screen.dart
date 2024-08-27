@@ -28,7 +28,7 @@ class _SalesCustomerScreenState extends State<SalesCustomerScreen> {
       body: Column(
         children: [
           SizedBox(height: 10,),
-         Obx(() => CustomerRegistrationSteps(currentStep: salesCustomerController.currentPage.value)),
+         Obx(() => CustomerRegistrationSteps(currentSteps: [salesCustomerController.currentPage.value])),
           Expanded(
            child: PageView(
              physics: NeverScrollableScrollPhysics(),
@@ -263,7 +263,7 @@ class _SalesCustomerScreenState extends State<SalesCustomerScreen> {
      // margin: EdgeInsets.only(left: 20, right: 20),
       padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
       width: double.infinity,
-      color: appGreenColor,
+      color: primaryColor,
       child: Text(title, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),),
     );
   }

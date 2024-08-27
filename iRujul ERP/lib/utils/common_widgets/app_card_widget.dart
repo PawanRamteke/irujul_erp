@@ -30,7 +30,7 @@ class AppCardWidget extends StatelessWidget {
           borderRadius: const BorderRadius.all(Radius.circular(10)),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.4),
+              color: Colors.grey.withOpacity(0.1),
               spreadRadius: 1,
               blurRadius: 1,
               offset: Offset(1, 1), // changes position of shadow

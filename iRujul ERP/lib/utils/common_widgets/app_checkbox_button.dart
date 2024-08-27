@@ -20,8 +20,8 @@ class AppCheckboxButton extends StatelessWidget {
             height: 25,
             child: Image.asset(isSelected ?"assets/images/check.png" : "assets/images/unchecked.png"),
           ),
-          SizedBox(width: 5,),
-          Text(title)
+          SizedBox(width: 10,),
+          Expanded(child: Text(title))
         ],
       ),
     );

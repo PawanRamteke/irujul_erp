@@ -27,6 +27,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
+    //loginController.userName.text = "rnr_api_test";
+    //loginController.password.text = "Rnr_api_test_13rt";
     _showPinVerificationDialog();
   }
 
@@ -100,7 +102,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   SizedBox(height: 20,),
                   AppTextField(
                       controller: loginController.password,
-                      placeholder: "Password".tr
+                      placeholder: "Password".tr,
+                    secureText: true,
                   ),
                   SizedBox(height: 20,),
                   Obx(() =>
@@ -122,17 +125,17 @@ class _LoginScreenState extends State<LoginScreen> {
             margin: const EdgeInsets.only(top: 20),
             width: 80,
             height: 40,
-            color: appGreenColor,
+            color: primaryColor,
             child: const Center(
               child: Text("Login", style: TextStyle(fontWeight: FontWeight.w600),),
             ),
           ),
-          Container(
-            margin: const EdgeInsets.only(top: 60),
-            width: 10,
-            height: 10,
-            child: Image.asset("assets/images/login-tab-corner.png", fit: BoxFit.fill,),
-          ),
+          // Container(
+          //   margin: const EdgeInsets.only(top: 60),
+          //   width: 10,
+          //   height: 10,
+          //   child: Image.asset("assets/images/login-tab-corner.png", fit: BoxFit.fill,),
+          // ),
         ],
       ),
     );
@@ -159,8 +162,8 @@ class _LoginScreenState extends State<LoginScreen> {
              // showCompanyDropDownList();
             },),
             SizedBox(height: 20,),
-            AppTextField(placeholder: "Branch", isDropDown: true, onTap: (){
-             // showBranchDropDownList();
+            AppTextField(controller: loginController.branch, placeholder: "Branch", isDropDown: true, onTap: (){
+             loginController.showBranchDropDownList();
             },),
             SizedBox(height: 20,),
             AppButton(btnName: "Continue", width: 200, onPressed: (){

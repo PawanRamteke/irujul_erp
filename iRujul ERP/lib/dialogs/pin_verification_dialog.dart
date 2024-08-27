@@ -35,6 +35,8 @@ class PinVerificationDialog extends StatelessWidget {
           Text("Enter server verification pin"),
           SizedBox(height: 20,),
           OtpTextField(
+            fieldWidth: 40,
+            fieldHeight: 70,
             margin: EdgeInsets.only(left: 5,right: 5),
             numberOfFields: 6,
             showFieldAsBox: true,

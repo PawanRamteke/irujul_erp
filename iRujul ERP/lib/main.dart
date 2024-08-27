@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: "iRujul ERP",
+      title: "iPlug POS",
       initialRoute: RouteName.splashScreen,
       getPages: getPages,
       translations: Languages(),

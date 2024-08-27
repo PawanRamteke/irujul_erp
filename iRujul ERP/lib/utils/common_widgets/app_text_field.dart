@@ -11,6 +11,8 @@ class AppTextField extends StatelessWidget {
   final TextInputType? keyboardType;
   final bool? isDropDown;
   final Function? onTap;
+  final bool? secureText;
+  final int? maxLength;
   AppTextField({
     super.key,
     this.controller,
@@ -19,7 +21,9 @@ class AppTextField extends StatelessWidget {
     this.icon,
     this.keyboardType,
     this.isDropDown,
-    this.onTap
+    this.onTap,
+    this.secureText,
+    this.maxLength
   });
   @override
   Widget build(BuildContext context) {
@@ -30,9 +34,8 @@ class AppTextField extends StatelessWidget {
         decoration: InputDecoration(
           border: InputBorder.none,
           labelText: placeholder,
-          labelStyle: const TextStyle(
-              fontSize: 15
-          ),
+          labelStyle: const TextStyle(fontSize: 15),
+          counterText: "",
           focusedBorder:  OutlineInputBorder(
             borderRadius: BorderRadius.circular(0),
             borderSide: BorderSide(color: appRedColor, width: 0.5),
@@ -41,14 +44,17 @@ class AppTextField extends StatelessWidget {
             borderRadius: BorderRadius.circular(0),
             borderSide: BorderSide(color: appRedColor, width: 0.5),
           ),
-          suffixIcon: (isDropDown ?? false) ? Icon(Icons.arrow_drop_down) : null,
+          suffixIcon: (isDropDown ?? false) ? const Icon(Icons.arrow_drop_down) : null,
         ),
         readOnly: isDropDown ?? false,
+        obscureText: secureText ?? false,
         onTap: () {
             if((isDropDown ?? false) && onTap != null) {
               onTap!();
             }
         },
+        maxLength: maxLength,
+
       ),
     );
   }
