@@ -29,6 +29,13 @@ class _AddEnquiryStep2ScreenState extends State<AddEnquiryStep2Screen> {
     });
     super.initState();
   }
+
+  @override
+  void dispose() {
+    addEnquiryController.selectedItems.clear();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,6 +65,8 @@ class _AddEnquiryStep2ScreenState extends State<AddEnquiryStep2Screen> {
                         addEnquiryController.selectedFamily = model;
                       } else if(index == 3) {
                         addEnquiryController.selectedCapacity = model;
+                      } else if(index == 4) {
+                        addEnquiryController.selectedColor = model;
                       }
                       addEnquiryController.items[index].selectedValue = model;
                       addEnquiryController.items.refresh();
@@ -65,9 +74,81 @@ class _AddEnquiryStep2ScreenState extends State<AddEnquiryStep2Screen> {
                   },
                 ))
               ),
-              AppButton(btnName: "Next", onPressed: (){
-                Get.toNamed(RouteName.addEnquiryStep3Screen);
-              })
+              Obx(() => addEnquiryController.selectedItems.isNotEmpty ?
+              AppCardWidget(
+                //color: Colors.grey[400],
+                height: 210,
+                padding: EdgeInsets.only(bottom: 10),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 40,
+                      child: Row(
+                        children: [
+                          const SizedBox(width: 110, child: Text("Code",textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),)),
+                          Container( width: 1, height: 40, color: Colors.grey,),
+                          const Expanded(child: Text("Name",textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),),),
+                          Container( width: 1, height: 40, color: Colors.grey,),
+                          Container(width: 70 , child: const Text("Action",textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),))
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: 1,
+                      color: Colors.grey,
+                    ),
+                    Expanded(child: ListView.builder(
+                        itemCount: addEnquiryController.selectedItems.length,
+                        itemBuilder: (context, index)  {
+                          ProductCategoryModel model = addEnquiryController.selectedItems.value[index];
+                          return Container(
+                            height: 40,
+                            child: Column(
+                              children: [
+                                Expanded(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                    children: [
+                                      SizedBox(width: 110, child: Text(model.code ?? "-",textAlign: TextAlign.center, style: TextStyle(fontSize: 12),)),
+                                      Container( width: 1, height: 40, color: Colors.grey,),
+                                      Expanded(child: Text(model.name ?? "-",textAlign: TextAlign.center,style: TextStyle(fontSize: 12),)),
+                                      Container(width: 1, height: 40, color: Colors.grey,),
+                                      SizedBox(
+                                        width: 70,
+                                        child: Center(
+                                          child: InkWell(
+                                            onTap: (){
+                                              addEnquiryController.selectedItems.value.removeAt(index);
+                                              addEnquiryController.selectedItems.refresh();
+                                            },
+                                            child: SizedBox(
+                                              width: 30,
+                                              height: 30,
+                                              child: Image.asset("assets/images/ic_remove.png"),
+                                            ),
+                                          ),
+                                                                                )
+                                      )
+                                    ],
+                                  ),
+                                ),
+                                Container(height: 1,color: Colors.grey,),
+                              ],
+                            ),
+                          );
+                        }
+                    )),
+                    SizedBox(height: 20,),
+                    AppButton(
+                      width: 200,
+                      btnName: "Next",
+                      onPressed: (){
+                        Get.toNamed(RouteName.addEnquiryStep3Screen);
+                      }
+                    )
+                  ],
+                ),
+              ) : Container())
             ],
           ),
         )

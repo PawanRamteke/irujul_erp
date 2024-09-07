@@ -7,6 +7,8 @@ class AppCardWidget extends StatelessWidget {
   final double? width;
   final double? height;
   final Widget child;
+  final Color? color;
+  final double? borderRadius;
   //final double? borderRadius;
   AppCardWidget({
     super.key,
@@ -14,7 +16,9 @@ class AppCardWidget extends StatelessWidget {
     this.padding,
     this.width,
     this.height,
-    required this.child
+    required this.child,
+    this.color,
+    this.borderRadius
    // this.borderRadius
   });
 
@@ -26,8 +30,8 @@ class AppCardWidget extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: const BorderRadius.all(Radius.circular(10)),
+          color: color ?? Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(borderRadius ?? 10)),
           boxShadow: [
             BoxShadow(
               color: Colors.grey.withOpacity(0.1),

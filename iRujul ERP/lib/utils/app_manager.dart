@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:irujul_erp/models/login_model.dart';
 import 'package:irujul_erp/utils/colors.dart';
 
@@ -25,7 +26,6 @@ class AppManager {
               borderRadius: BorderRadius.circular(10),
             ),
             child: Column(
-              
               children: [
                 Text(title,
                   style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: appRedColor),
@@ -48,6 +48,13 @@ class AppManager {
             )
         )
     );
+  }
+
+  String convertDateFormat(String inputDate, String currentFormat, String newFormat) {
+    final DateFormat inputFormat = DateFormat(currentFormat);
+    final DateFormat outputFormat = DateFormat(newFormat);
+    DateTime dateTime = inputFormat.parse(inputDate);
+    return outputFormat.format(dateTime);
   }
 
   static showToast(String message) {

@@ -1,8 +1,12 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:irujul_erp/models/enquiry_list_model.dart';
 import 'package:irujul_erp/models/product_category_model.dart';
 import 'package:irujul_erp/screens/add_enquiry_step_2_screen.dart';
 import 'package:irujul_erp/utils/ApiManager/Repository/repository.dart';
+import 'package:irujul_erp/utils/app_manager.dart';
 
 class AddEnquiryController extends GetxController {
   // List of items
@@ -34,11 +38,71 @@ class AddEnquiryController extends GetxController {
     getProductColorApi();
   }
 
+  ProductCategoryModel? _selectedColor;
+  set selectedColor(ProductCategoryModel value) {
+    _selectedColor = value;
+    getItemInfoApi();
+  }
+
+  TextEditingController startDate = TextEditingController();
+  TextEditingController endDate = TextEditingController();
+
+  RxList<ProductCategoryModel> selectedItems = RxList<ProductCategoryModel>();
+
+  RxList<EnquiryListModel> arrEnquiryList = RxList<EnquiryListModel>();
+
+  TextEditingController mobileNo = TextEditingController();
+  TextEditingController name = TextEditingController();
+  TextEditingController gender = TextEditingController();
+  TextEditingController city = TextEditingController();
+  TextEditingController state = TextEditingController();
+  TextEditingController zipcode = TextEditingController();
+
+  RxBool isInterestedInAppleCare = false.obs;
+  RxBool isLikeToBuyWithFinance = false.obs;
+  RxBool isOutstraightPurchase = false.obs;
+  RxBool isExchangeDevice = false.obs;
+
+  TextEditingController nextFollowupDate = TextEditingController();
+  TextEditingController nextFollowupTime = TextEditingController();
+  TextEditingController expectedClosureDate = TextEditingController();
+  TextEditingController source = TextEditingController();
+  TextEditingController subSource = TextEditingController();
+  TextEditingController category = TextEditingController();
+  TextEditingController remark = TextEditingController();
+
+  List<String> leadCategory = [];
+  List<ProductCategoryModel> stateList = [];
+  List<String> cityList = [];
+  List<String> sourceList = [];
+
+  getEnquiryListApi() async {
+
+    if(startDate.text.isEmpty || endDate.text.isEmpty) {
+        return;
+    }
+    arrEnquiryList.clear();
+    arrEnquiryList.refresh();
+
+    String sDate = AppManager().convertDateFormat(startDate.text!, "dd/MM/yyyy", "yyyy-MM-dd");
+    String eDate = AppManager().convertDateFormat(endDate.text!, "dd/MM/yyyy", "yyyy-MM-dd");
+
+    dynamic response = await appRepository.getEnquiryListApi(sDate, eDate);
+    if(response["Data"] != null) {
+      List<dynamic> list = response["Data"];
+      for (var json in list) {
+        arrEnquiryList.add(EnquiryListModel.fromJson(json));
+      }
+    }
+    arrEnquiryList.refresh();
+  }
+
+
   getCategoryApi() async {
     dynamic response = await appRepository.getCategoryAPI();
     List<ProductCategoryModel> arrCategories = [];
     items.clear();
-    if(response["Data"] != null) {
+    if(response != null && response["Data"] != null) {
       List<dynamic> list = response["Data"];
       for (var json in list) {
         arrCategories.add(ProductCategoryModel.fromJson(json));
@@ -121,4 +185,193 @@ class AddEnquiryController extends GetxController {
     return response;
   }
 
+  getItemInfoApi() async {
+    dynamic response = await appRepository.getSelectedItemInfoApi(_selectedCategory?.iD ?? "", _selectedBrand?.iD ?? "", _selectedFamily?.iD ?? "", _selectedCapacity?.iD ?? "", _selectedColor?.iD ?? "");
+    //List<ProductCategoryModel> arrItems = [];
+    if(response["Data"] != null) {
+      List<dynamic> list = response["Data"];
+      for (var json in list) {
+        ProductCategoryModel model = ProductCategoryModel.fromJson(json);
+        selectedItems.value.add(model);
+        selectedItems.refresh();
+      }
+    }
+    _selectedCategory = null;
+    _selectedBrand = null;
+    _selectedFamily = null;
+    _selectedCapacity = null;
+    _selectedColor = null;
+    getCategoryApi();
+    return response;
+  }
+  
+  getLeadCategoryApi() async {
+     dynamic response = await appRepository.getRecordsAPI("lead_category");
+     if(response["Data"] != null) {
+       List<dynamic> list = response["Data"];
+       leadCategory = list.map((element) => element["Name"].toString()).toList();
+       print(leadCategory);
+     }
+  }
+
+  getStateListApi() async {
+    dynamic request = {
+      "module": "state",
+      "group_id" : 1
+    };
+    dynamic response = await appRepository.getStateListApi(request);
+    if(response["Data"] != null) {
+      List<dynamic> list = response["Data"];
+      for (var json in list) {
+        ProductCategoryModel model = ProductCategoryModel.fromJson(json);
+        stateList.add(model);
+      }
+    }
+  }
+
+  getCityListApi(String groupId) async {
+    dynamic request = {
+      "module": "city",
+      "group_id" : groupId
+    };
+    dynamic response = await appRepository.getStateListApi(request);
+    if(response["Data"] != null) {
+      List<dynamic> list = response["Data"];
+      cityList = list.map((element) => element["Name"].toString()).toList();
+    }
+  }
+  
+  getSourceApi() async {
+    dynamic response = await appRepository.getRecordsAPI("lead_source");
+    if(response["Data"] != null) {
+      List<dynamic> list = response["Data"];
+      sourceList = list.map((element) => element["Name"].toString()).toList();
+    }
+    return response;
+  }
+
+  createEnquiryApi() async {
+    List<dynamic> items = [];
+    for (var item in selectedItems) {
+      dynamic itemJson =  {
+        "ItemCode": item.code,
+        "ItemName": item.name,
+        "ModelID": item.iD,
+        "CategoryID": "",
+        "Capacity":"",
+        "Color":"",
+        "Quantity": 1,
+        "BudgetAmount": 0,
+        "ProductImage": [
+          {
+            "ProductImagePath": "http//fgfg"
+          }
+        ]
+      };
+      items.add(itemJson);
+    }
+
+    dynamic request = {
+      "module": "enquiry",
+      "Header": {
+        "CompanyID" : AppManager.shared.loginModel?.companyID ?? "",
+        "TXNName":"",
+        "BranchRefCode": AppManager.shared.loginModel?.branchAPIRefCode ?? "",
+        "ExecutiveCode": AppManager.shared.loginModel?.defaultExecutiveCode ?? "",
+        "VoucherType": "1907",
+        "VendorID": "",
+        "CustomerName": name.text,
+        "CustomerMobile": mobileNo.text,
+        "CustomerEmail": "",
+        "CustomerCity": city.text,
+        "StateName": state.text,
+        "Source": source.text,
+        "Category": category.text,
+        "IsInterestedInShieldItem": isInterestedInAppleCare.value ? "1" : "0",
+        "IsDeviceEnquiry": isExchangeDevice.value ? "1" : "0",
+        "IsFinanceEnquiry": isLikeToBuyWithFinance.value ? "1" : "0",
+        "OutStraightPurchase": isOutstraightPurchase.value ? "1" : "0",
+
+      },
+      "Line": items
+    };
+
+    dynamic response = await appRepository.createEnquiryAPI(request);
+    if (response["status"] != null && response["status"] == 200 || response["status"] == 201) {
+      AppManager.showToast(response["message"]);
+      return true;
+    }
+    return false;
+  }
+
+  showGenderDropDown() {
+      List<String> genderArr = ["Male", "Female", "Not specified"];
+      AppManager.shared.showActionSheet(genderArr,"Select Gender", (index) => {
+        gender.text = genderArr[index]
+      });
+  }
+
+  showLeadCategoryDropDown() {
+    AppManager.shared.showActionSheet(leadCategory,"Select Category", (index) => {
+      category.text = leadCategory[index]
+    });
+  }
+
+  showStateDropDown() {
+    List<String> list = stateList.map((element) => element.name ?? "").toList();
+    AppManager.shared.showActionSheet(list,"Select State", (index) {
+      state.text = list[index];
+      ProductCategoryModel model = stateList[index];
+      city.text = "";
+      getCityListApi(model.iD ?? "");
+    });
+  }
+
+  showCityDropDown() {
+    if(state.text.isEmpty) {
+      AppManager.showToast("Please select state");
+      return;
+    }
+    if(cityList.isEmpty) {
+      AppManager.showToast("city not available");
+      return;
+    }
+    AppManager.shared.showActionSheet(cityList,"Select City", (index) => {
+      city.text = cityList[index]
+    });
+  }
+
+  showSourceDropDown() {
+    AppManager.shared.showActionSheet(sourceList,"Select Source", (index) => {
+      source.text = sourceList[index]
+    });
+  }
+
+  validateForStep1() {
+    if(mobileNo.text.length < 10) {
+      AppManager.showToast("Please enter valid mobile number");
+      return false;
+    }
+    if(name.text.trim().isEmpty)  {
+      AppManager.showToast("Please enter customer name");
+      return false;
+    }
+    if(gender.text.isEmpty) {
+      AppManager.showToast("Please select gender");
+      return false;
+    }
+    if(city.text.trim().isEmpty) {
+      AppManager.showToast("Please enter city");
+      return false;
+    }
+    if(state.text.trim().isEmpty) {
+      AppManager.showToast("Please enter state");
+      return false;
+    }
+    if(zipcode.text.length < 6) {
+      AppManager.showToast("Please enter valid zip code");
+      return false;
+    }
+    return true;
+  }
 }

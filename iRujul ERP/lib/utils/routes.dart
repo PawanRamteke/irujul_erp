@@ -9,6 +9,7 @@ import 'package:irujul_erp/screens/login_screen.dart';
 import 'package:irujul_erp/screens/sales/sales_customer_list_screen.dart';
 import 'package:irujul_erp/screens/sales/sales_customer_screen.dart';
 import 'package:irujul_erp/screens/splash_screen.dart';
+import 'package:irujul_erp/screens/update_enquiry_screen.dart';
 
 class RouteName {
   static const splashScreen = '/splash_screen';
@@ -22,8 +23,9 @@ class RouteName {
   //Enquiry
   static const addEnquiryStep1Screen = '/add_enquiry_step1_screen';
   static const addEnquiryStep2Screen = '/add_enquiry_step2_screen';
-  static const  addEnquiryStep3Screen = "/add_enquiry_step3_screen";
+  static const addEnquiryStep3Screen = "/add_enquiry_step3_screen";
 
+  static const updateEnquiryScreen ="/update_enquiry_screen";
 }
 
 final getPages = [
@@ -60,5 +62,9 @@ final getPages = [
       name: RouteName.addEnquiryStep3Screen,
       page: () => const AddEnquiryStep3Screen(),
       transition: Transition.noTransition
+  ),
+  GetPage(
+      name: RouteName.updateEnquiryScreen,
+      page: () => const UpdateEnquiryScreen()
   ),
 ];

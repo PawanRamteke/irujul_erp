@@ -24,6 +24,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final ScrollOffsetListener scrollOffsetListener = ScrollOffsetListener.create();
 
   @override
+  void initState() {
+    dynamic args = Get.arguments;
+    if(args != null && args["from"] == "add_enquiry") {
+      dashboardController.selectedTabIndex.value = 1;
+    }
+    super.initState();
+  }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

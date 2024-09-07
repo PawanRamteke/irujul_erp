@@ -27,8 +27,8 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    //loginController.userName.text = "rnr_api_test";
-    //loginController.password.text = "Rnr_api_test_13rt";
+   // loginController.userName.text = "rnr_api_test";
+  //  loginController.password.text = "Rnr_api_test_13rt";
     _showPinVerificationDialog();
   }
 

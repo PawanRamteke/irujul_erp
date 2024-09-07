@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:irujul_erp/controllers/add_enquiry_controller.dart';
 import 'package:irujul_erp/utils/common_widgets/app_button.dart';
 import 'package:irujul_erp/utils/common_widgets/app_card_widget.dart';
 import 'package:irujul_erp/utils/common_widgets/app_checkbox_button.dart';
+import 'package:irujul_erp/utils/common_widgets/app_loader.dart';
 import 'package:irujul_erp/utils/common_widgets/app_text_field.dart';
+import 'package:irujul_erp/utils/routes.dart';
 
 import '../utils/colors.dart';
 import '../utils/common_widgets/customer_registration_steps.dart';
@@ -15,6 +19,14 @@ class AddEnquiryStep3Screen extends StatefulWidget {
 }
 
 class _AddEnquiryStep3ScreenState extends State<AddEnquiryStep3Screen> {
+  AddEnquiryController addEnquiryController = Get.put(AddEnquiryController());
+
+  @override
+  void initState() {
+    addEnquiryController.getLeadCategoryApi();
+    addEnquiryController.getSourceApi();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,47 +49,63 @@ class _AddEnquiryStep3ScreenState extends State<AddEnquiryStep3Screen> {
                      padding: EdgeInsets.all(20),
                      child: Column(
                        children: [
-                         AppCheckboxButton(title: "Yes, I am interested in Apple Care & Protection Plan.",
-                             isSelected: false,
+                         Obx(() => AppCheckboxButton(title: "Yes, I am interested in Apple Care & Protection Plan.",
+                             isSelected: addEnquiryController.isInterestedInAppleCare.value,
                              onTap: (){
-
-                             }),
+                               addEnquiryController.isInterestedInAppleCare.value = !addEnquiryController.isInterestedInAppleCare.value;
+                             }
+                         )),
                          SizedBox(height: 20,),
-                         AppCheckboxButton(title: "Yes, I like to buy with finance.",
-                             isSelected: false,
+                         Obx(()  => AppCheckboxButton(title: "Yes, I want to exchange my old Device.",
+                             isSelected: addEnquiryController.isExchangeDevice.value,
                              onTap: (){
-
-                             }),
+                               addEnquiryController.isExchangeDevice.value = !addEnquiryController.isExchangeDevice.value;
+                             }
+                         )),
                          SizedBox(height: 20,),
-                         AppCheckboxButton(title: "OutStraight purchase.",
-                             isSelected: false,
+                         Obx(()  => AppCheckboxButton(title: "Yes, I like to buy with finance.",
+                             isSelected: addEnquiryController.isLikeToBuyWithFinance.value,
                              onTap: (){
-
-                             }),
+                               addEnquiryController.isLikeToBuyWithFinance.value = !addEnquiryController.isLikeToBuyWithFinance.value;
+                             }
+                         )),
+                         SizedBox(height: 20,),
+                         Obx(() => AppCheckboxButton(title: "OutStraight purchase.",
+                             isSelected: addEnquiryController.isOutstraightPurchase.value,
+                             onTap: (){
+                               addEnquiryController.isOutstraightPurchase.value = !addEnquiryController.isOutstraightPurchase.value;
+                             }
+                         )),
                          SizedBox(height: 40,),
-                         AppTextField(placeholder: "Next Follow Up Date"),
+                         AppTextField(
+                           controller: addEnquiryController.source,
+                           placeholder: "Source",
+                           isDropDown: true,
+                           onTap: () {
+                             addEnquiryController.showSourceDropDown();
+                           },
+                         ),
 
                          SizedBox(height: 20,),
-                         AppTextField(placeholder: "Next Follow Up Time"),
+                         AppTextField(
+                           controller: addEnquiryController.category,
+                           placeholder: "Category",
+                           isDropDown: true,
+                           onTap: () {
+                             addEnquiryController.showLeadCategoryDropDown();
+                           },
+                         ),
 
                          SizedBox(height: 20,),
-                         AppTextField(placeholder: "Expected Closure Date"),
-
-                         SizedBox(height: 20,),
-                         AppTextField(placeholder: "Source"),
-
-                         SizedBox(height: 20,),
-                         AppTextField(placeholder: "Sub Source"),
-
-                         SizedBox(height: 20,),
-                         AppTextField(placeholder: "Industry Type"),
-
-                         SizedBox(height: 20,),
-                         AppTextField(placeholder: "Remark", ),
+                         AppTextField(
+                           controller: addEnquiryController.remark,
+                           placeholder: "Remark",
+                           maxLines: 4,
+                         ),
 
                          SizedBox(height: 20,),
                          AppButton(btnName: "Submit", onPressed: (){
-
+                           _createEnquiryApi();
                          })
                        ],
                      )
@@ -90,5 +118,14 @@ class _AddEnquiryStep3ScreenState extends State<AddEnquiryStep3Screen> {
        )
       ),
     );
+  }
+
+  _createEnquiryApi() async {
+    AppLoader.show(context);
+    bool status = await addEnquiryController.createEnquiryApi();
+    AppLoader.hide();
+    if(status) {
+      Get.offAllNamed(RouteName.dashboardScreen, arguments: {"from": "add_enquiry"});
+    }
   }
 }
