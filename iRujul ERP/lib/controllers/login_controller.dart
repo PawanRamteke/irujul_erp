@@ -12,6 +12,7 @@ import 'package:irujul_erp/utils/common_widgets/app_button.dart';
 import 'package:irujul_erp/utils/common_widgets/app_loader.dart';
 import 'package:irujul_erp/utils/common_widgets/app_text_field.dart';
 import 'package:irujul_erp/utils/routes.dart';
+import 'package:irujul_erp/utils/text_styles.dart';
 
 class LoginController extends GetxController {
   AppRepository appRepository = AppRepository();
@@ -20,13 +21,19 @@ class LoginController extends GetxController {
   TextEditingController password = TextEditingController();
   TextEditingController company = TextEditingController();
   TextEditingController branch = TextEditingController();
-  Rx<bool> rememberMe = false.obs;
+  TextEditingController otpController = TextEditingController();
+
+  Rx<bool> rememberMe = true.obs;
 
   List<String> arrCompany = [];
   List<BranchModel> arrBranch = [];
   String serverPin = "";
 
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
+
+  checkForUsernameFromPreference() async  {
+    userName.text = await Preferences.getLoginUsername();
+  }
 
   showBranchDropDownList() {
     List<String> branches = arrBranch.expand((element) => {element.branchName ?? ""}).toList();
@@ -49,12 +56,9 @@ class LoginController extends GetxController {
           height: 300,
           child: Column(
             children: [
-              const Text(
+               Text(
                   "Select Branch",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18
-                ),
+                style: fontBoldStyle(fontSize: 17),
               ),
               SizedBox(height: 30,),
               AppTextField(controller: branch,placeholder: "Branch", isDropDown: true, onTap: (){
@@ -83,7 +87,7 @@ class LoginController extends GetxController {
     FocusManager.instance.primaryFocus?.unfocus();
     if(validateServerPin()) {
       AppLoader.show(context);
-      dynamic response = await appRepository.verifyServerPinAPI(serverPin);
+      dynamic response = await appRepository.verifyServerPinAPI(otpController.text);
       AppLoader.hide();
       if(response == null) {
         AppManager.showToast("Something went wrong. Please contact administrator");
@@ -117,6 +121,11 @@ class LoginController extends GetxController {
           AppManager.showToast(response["message"]);
           AppManager.shared.loginModel = LoginModel.fromJson(response["Data"]);
           await Preferences.saveAcceessToken(AppManager.shared.loginModel!.accessToken!);
+          if(rememberMe.value) {
+            await Preferences.saveLoginUsername(userName.text);
+          } else {
+            Preferences.clearLoginUsername();
+          }
          // showSelectBranchView();
          // cardKey.currentState?.toggleCard();
           getUserRecordsApi("user_branch", context);
@@ -144,7 +153,7 @@ class LoginController extends GetxController {
   }
 
   validateServerPin() {
-    if(serverPin.length < 6) {
+    if(otpController.text.length < 6) {
       AppManager.showToast("Please enter valid server pin");
       return false;
     }

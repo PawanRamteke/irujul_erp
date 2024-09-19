@@ -4,12 +4,13 @@ import 'package:irujul_erp/controllers/add_enquiry_controller.dart';
 import 'package:irujul_erp/models/product_category_model.dart';
 import 'package:irujul_erp/utils/common_widgets/app_loader.dart';
 import 'package:irujul_erp/utils/routes.dart';
+import 'package:irujul_erp/utils/text_styles.dart';
 
-import '../utils/colors.dart';
-import '../utils/common_widgets/app_button.dart';
-import '../utils/common_widgets/app_card_widget.dart';
-import '../utils/common_widgets/app_text_field.dart';
-import '../utils/common_widgets/customer_registration_steps.dart';
+import '../../utils/colors.dart';
+import '../../utils/common_widgets/app_button.dart';
+import '../../utils/common_widgets/app_card_widget.dart';
+import '../../utils/common_widgets/customer_registration_steps.dart';
+
 
 class AddEnquiryStep2Screen extends StatefulWidget {
   const AddEnquiryStep2Screen({Key? key}) : super(key: key);
@@ -40,7 +41,7 @@ class _AddEnquiryStep2ScreenState extends State<AddEnquiryStep2Screen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Enquiry"),
+        title: Text("Add Enquiry", style: fontSemiBoldStyle(fontSize: 18)),
         backgroundColor: primaryColor,
       ),
       body: SafeArea(
@@ -50,10 +51,11 @@ class _AddEnquiryStep2ScreenState extends State<AddEnquiryStep2Screen> {
           child: Column(
             children: [
               CustomerRegistrationSteps(currentSteps: const [0,1]),
-              const Text("Product Details", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),),
-              SizedBox(height: 20,),
+              Text("Product Details", style: fontRegularStyle(fontWeight: FontWeight.w600, fontSize: 12),),
+              const SizedBox(height: 20,),
               Expanded(
                 child: Obx(() => ListView.builder(
+                  controller: addEnquiryController.scrollController,
                   itemCount: addEnquiryController.items.length,
                   itemBuilder: (BuildContext context, int index) {
                     return  ExpandableListItem(addEnquiryController.items[index], (model) {
@@ -70,6 +72,11 @@ class _AddEnquiryStep2ScreenState extends State<AddEnquiryStep2Screen> {
                       }
                       addEnquiryController.items[index].selectedValue = model;
                       addEnquiryController.items.refresh();
+
+                      Future.delayed(const Duration(seconds: 1), (){
+                        addEnquiryController.scrollToBottom();
+                      });
+
                     });
                   },
                 ))
@@ -85,11 +92,11 @@ class _AddEnquiryStep2ScreenState extends State<AddEnquiryStep2Screen> {
                       height: 40,
                       child: Row(
                         children: [
-                          const SizedBox(width: 110, child: Text("Code",textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),)),
+                          SizedBox(width: 110, child: Text("Code",textAlign: TextAlign.center, style: fontRegularStyle(fontSize: 12, fontWeight: FontWeight.bold),)),
                           Container( width: 1, height: 40, color: Colors.grey,),
-                          const Expanded(child: Text("Name",textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),),),
+                          Expanded(child: Text("Name",textAlign: TextAlign.center, style: fontRegularStyle(fontSize: 12,fontWeight: FontWeight.bold),),),
                           Container( width: 1, height: 40, color: Colors.grey,),
-                          Container(width: 70 , child: const Text("Action",textAlign: TextAlign.center, style: TextStyle(fontWeight: FontWeight.bold),))
+                          Container(width: 70 , child: Text("Action",textAlign: TextAlign.center, style: fontRegularStyle(fontSize: 12, fontWeight: FontWeight.bold),))
                         ],
                       ),
                     ),
@@ -109,9 +116,9 @@ class _AddEnquiryStep2ScreenState extends State<AddEnquiryStep2Screen> {
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                                     children: [
-                                      SizedBox(width: 110, child: Text(model.code ?? "-",textAlign: TextAlign.center, style: TextStyle(fontSize: 12),)),
+                                      SizedBox(width: 110, child: Text(model.code ?? "-",textAlign: TextAlign.center, style: fontRegularStyle(fontSize: 12),)),
                                       Container( width: 1, height: 40, color: Colors.grey,),
-                                      Expanded(child: Text(model.name ?? "-",textAlign: TextAlign.center,style: TextStyle(fontSize: 12),)),
+                                      Expanded(child: Text(model.name ?? "-",textAlign: TextAlign.center,style: fontRegularStyle(fontSize: 12),)),
                                       Container(width: 1, height: 40, color: Colors.grey,),
                                       SizedBox(
                                         width: 70,
@@ -195,7 +202,7 @@ class _ExpandableListItemState extends State<ExpandableListItem> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment:  MainAxisAlignment.center,
             children: [
-              Text(widget.item.headerValue, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),),
+              Text(widget.item.headerValue, style: fontRegularStyle(fontWeight: FontWeight.w600, fontSize: 14),),
               const SizedBox(height: 10,),
               Container(
                 width: double.infinity,
@@ -224,7 +231,7 @@ class _ExpandableListItemState extends State<ExpandableListItem> {
                         borderRadius: BorderRadius.circular(40),
                         border: Border.all(color: Colors.grey[300]!)
                       ),
-                      child: Text(e.name ?? ""),
+                      child: Text(e.name ?? "", style: fontRegularStyle(fontSize: 12),),
                     ),
                   ))
                   .toList(),

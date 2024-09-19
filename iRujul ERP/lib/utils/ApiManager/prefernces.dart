@@ -6,6 +6,7 @@ class Preferences {
   static saveClientServerData(dynamic details) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString("ClientServerData", jsonEncode(details));
+    prefs.setString("ServerDataSaveTime", DateTime.now().toString());
   }
 
   static getClientServerData() async {
@@ -16,6 +17,25 @@ class Preferences {
     }
     dynamic data = jsonDecode(details);
     return data;
+  }
+
+  static shouldShowServerPinDialog() async  {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? strDate = prefs.getString("ServerDataSaveTime");
+    if(strDate != null && strDate!.isNotEmpty) {
+      DateTime parsedDate = DateTime.parse(strDate);
+      DateTime now = DateTime.now();
+      Duration difference = now.difference(parsedDate);
+      if (difference.inHours > 24) {
+        print("The date is more than 24 hours ago.");
+        return true;
+      } else {
+        print("The date is within the last 24 hours.");
+        return false;
+      }
+    } else {
+      return true;
+    }
   }
 
   static saveAcceessToken(String token) async {
@@ -50,6 +70,11 @@ class Preferences {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String username = prefs.getString("LoginUsername") ?? "";
     return username;
+  }
+
+  static clearLoginUsername() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove("LoginUsername");
   }
 
   static clearAllData() async {

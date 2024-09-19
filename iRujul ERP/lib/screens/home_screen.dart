@@ -6,6 +6,7 @@ import 'package:irujul_erp/models/dashboard_model.dart';
 import 'package:irujul_erp/utils/colors.dart';
 import 'package:irujul_erp/utils/common_widgets/app_card_widget.dart';
 import 'package:irujul_erp/utils/common_widgets/app_charts.dart';
+import 'package:irujul_erp/utils/text_styles.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -48,21 +49,25 @@ class _HomeScreenState extends State<HomeScreen> {
                           homeController.selectedDashboardIndex.value = 0;
                           homeController.getDashboardApi("app_dashboard_first", context);
                         },
-                        child: Container(
+                        child: SizedBox(
                           height: 40,
-                          color: homeController.selectedDashboardIndex.value == 0 ? appRedColor : Colors.grey[300],
-                          child: Center(
-                            child: Text("Dashboard 1",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: homeController.selectedDashboardIndex.value == 0 ?
-                                  Colors.white : Colors.black,
-                                  fontWeight: homeController.selectedDashboardIndex.value == 0 ?
-                                  FontWeight.bold :
-                                  FontWeight.normal
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: Text("Dashboard 1",
+                                  style: fontRegularStyle(
+                                      fontSize: 15,
+                                      color: homeController.selectedDashboardIndex.value == 0 ?
+                                      appRedColor : Colors.black,
+                                      fontWeight: homeController.selectedDashboardIndex.value == 0 ?
+                                      FontWeight.w600 :
+                                      FontWeight.normal
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
-                              textAlign: TextAlign.center,
-                            ),
+                              Container(height: 2,color: homeController.selectedDashboardIndex.value == 0 ? appRedColor : Colors.transparent,)
+                            ],
                           ),
                         ),
                       )
@@ -73,21 +78,25 @@ class _HomeScreenState extends State<HomeScreen> {
                           homeController.selectedDashboardIndex.value = 1;
                           homeController.getDashboardApi("app_dashboard_second", context);
                         },
-                        child: Container(
+                        child: SizedBox(
                           height: 40,
-                          color: homeController.selectedDashboardIndex.value == 1 ? appRedColor : Colors.grey[300],
-                          child: Center(
-                            child: Text("Dashboard 2",
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: homeController.selectedDashboardIndex.value == 1 ?
-                                  Colors.white : Colors.black,
-                                  fontWeight: homeController.selectedDashboardIndex.value == 1 ?
-                                  FontWeight.bold :
-                                  FontWeight.normal
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: Text("Dashboard 2",
+                                  style: fontRegularStyle(
+                                      fontSize: 15,
+                                      color: homeController.selectedDashboardIndex.value == 1 ?
+                                      appRedColor : Colors.black,
+                                      fontWeight: homeController.selectedDashboardIndex.value == 1 ?
+                                      FontWeight.w600 :
+                                      FontWeight.normal
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
-                              textAlign: TextAlign.center,
-                            ),
+                              Container(height: 2,color: homeController.selectedDashboardIndex.value == 1 ? appRedColor : Colors.transparent,)
+                            ],
                           ),
                         ),
                       )
@@ -134,9 +143,9 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children:  [
-                  Text(homeController.todaysData.value[index].title ??  "", style: TextStyle(fontSize: 14),),
+                  Text(homeController.todaysData.value[index].title ??  "", style: fontRegularStyle(fontSize: 14),),
                   SizedBox(height: 10,),
-                  Text("Rs.${homeController.todaysData.value[index].saleAmount ?? "0.00"}", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),)
+                  Text("Rs.${homeController.todaysData.value[index].saleAmount ?? "0.00"}", style: fontRegularStyle(fontWeight: FontWeight.w600, fontSize: 16),)
                 ],
               ),
             );
@@ -151,18 +160,18 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         children: [
           Obx(() => Text(homeController.branchWiseData?.value.heading ?? "",
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
+              style: fontRegularStyle(fontSize: 16, fontWeight: FontWeight.bold)
           ),),
           SizedBox(height: 20,),
           Container(
             height: 40,
             color: Colors.grey[300],
-            child: const Row(
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(child: Text("Branch", textAlign: TextAlign.center,)),
-                Expanded(child: Text("Amount", textAlign: TextAlign.center,)),
-                Expanded(child: Text("Quantity", textAlign: TextAlign.center,)),
+                Expanded(child: Text("Branch", textAlign: TextAlign.center, style: fontRegularStyle(fontSize: 14),)),
+                Expanded(child: Text("Amount", textAlign: TextAlign.center,style: fontRegularStyle(fontSize: 14))),
+                Expanded(child: Text("Quantity", textAlign: TextAlign.center,style: fontRegularStyle(fontSize: 14))),
               ],
             ),
           ),
@@ -180,9 +189,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Expanded(child: Text(name, textAlign: TextAlign.center,)),
-                      Expanded(child: Text("Rs.$salesAmount", textAlign: TextAlign.center,)),
-                      Expanded(child: Text(saleQty, textAlign: TextAlign.center,)),
+                      Expanded(child: Text(name, textAlign: TextAlign.center,style: fontRegularStyle(fontSize: 14))),
+                      Expanded(child: Text("Rs.$salesAmount", textAlign: TextAlign.center,style: fontRegularStyle(fontSize: 14))),
+                      Expanded(child: Text(saleQty, textAlign: TextAlign.center,style: fontRegularStyle(fontSize: 14))),
                     ],
                   ),
                 );
@@ -208,7 +217,7 @@ class _HomeScreenState extends State<HomeScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(homeController.graphData?.value.heading ?? "",
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)
+                style:  fontRegularStyle(fontSize: 16, fontWeight: FontWeight.bold)
             ),
             SizedBox(height: 20,),
             Expanded(

@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:irujul_erp/controllers/dashboard_controller.dart';
 import 'package:irujul_erp/utils/colors.dart';
-import 'package:irujul_erp/utils/constants.dart';
 import 'package:irujul_erp/utils/routes.dart';
+import 'package:irujul_erp/utils/text_styles.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -48,7 +49,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
       bottomNavigationBar: Obx(() => BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         backgroundColor: primaryColor,
-        selectedItemColor: appRedColor,
+        selectedItemColor: Colors.white,
+        selectedLabelStyle: fontBoldStyle(fontSize: 10),
+        unselectedLabelStyle: fontRegularStyle(fontSize: 10),
         items: const [
           BottomNavigationBarItem(
               icon: Icon(Icons.home),
@@ -68,133 +71,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
           dashboardController.selectedTabIndex.value = index;
           },
       )),
-      body: Obx(()  => dashboardController.pages[dashboardController.selectedTabIndex.value])
-    );
-  }
-
-  _tabBarMenus() {
-    return Container(
-      width: double.infinity,
-      height: 50,
-      child: ScrollablePositionedList.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: appMenus.length,
-        itemBuilder: (context, index) {
-          return  InkWell(
-            onTap: () {
-              dashboardController.selectedMenuIndex.value = index;
-              itemScrollController.scrollTo(
-                  index: index,
-                  duration: Duration(milliseconds: 500),
-              );
-              String selectedMenu = appMenus[index];
-              menuOptions.forEach((element) {
-                print(element);
-                if(element.keys.first == selectedMenu) {
-                  dashboardController.menus.value = element[selectedMenu] as  List<dynamic>;
-                }
-              });
-            },
-            child: Obx(() => Container(
-              margin: EdgeInsets.all(5),
-              padding: EdgeInsets.only(left: 15,right: 15),
-              decoration: BoxDecoration(
-                color: dashboardController.selectedMenuIndex.value == index ? appMenuSelectedColor : appRedColor,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: 30,
-                      height: 30,
-                      child: Center(
-                        child: Icon(Icons.home, color: Colors.white,),
-                      ),
-                    ),
-                    SizedBox(width: 0,),
-                    Text(appMenus[index],
-                      style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            )
-          );
-        },
-        itemScrollController: itemScrollController,
-        scrollOffsetController: scrollOffsetController,
-        itemPositionsListener: itemPositionsListener,
-        scrollOffsetListener: scrollOffsetListener,
-      ),
-    );
-  }
-
-  _menuOptions() {
-    return Expanded(
-        child: Obx(() => ListView.builder(
-        itemCount: dashboardController.menus.length,
-        itemBuilder: (context,index) {
-          return _menuOptionItem(index);
-        }
-        )
-      ),
-    );
-  }
-
-  _menuOptionItem(int index) {
-    Map<String, dynamic> menu = dashboardController.menus[index];
-    return Container(
-      margin: EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 5),
-      width: double.infinity,
-      child: ListTileTheme(
-        tileColor: Color(0xffF3EEEE),
-        minVerticalPadding: -10,
-        minLeadingWidth: 0,
-        horizontalTitleGap: 10,
-        contentPadding: EdgeInsets.zero,
-        //data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
-        child: ExpansionTile(
-            initiallyExpanded: index == dashboardController.selectedOptionIndex.value,
-            visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-            shape: Border(),
-            tilePadding: EdgeInsets.only(right: 10),
-            leading: Container(
-              width: 2,
-              height: 40,
-              color: appRedColor,
-            ),
-            title: Text(
-              menu["menu"] as String,
-              style: TextStyle(color: appRedColor, fontSize: 16),
-            ),
-            children: List<Widget>.generate(
-                (menu["options"] ?? []).length,
-                  (index) => InkWell(
-                    onTap: (){
-                      print(menu);
-
-                      dashboardController.performNavigation(menu["menu"], (menu["options"] ?? [])[index]);
-                    },
-                    child: SizedBox(
-                      height: 40,
-                      child: Row(
-                        children: [
-                          Icon(Icons.arrow_right),
-                          Text((menu["options"] ?? [])[index])
-                        ],
-                      ),
-                    ),
-                  )
-            ),
-          onExpansionChanged: (newState){
-              dashboardController.selectedOptionIndex.value = index;
+      body: Obx(()  => PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (status,value) async{
+            bool? value = await _showExitConfirmationDialog(context);
+            if (value ?? false) {
+              SystemNavigator.pop();
+            }
           },
-        ),
-      ),
+          child: dashboardController.pages[dashboardController.selectedTabIndex.value]
+      ))
     );
   }
 
@@ -202,8 +88,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return SafeArea(
       child:Column(
         children: [
-          SizedBox(height: 20,),
-          Container(
+          const SizedBox(height: 20,),
+          SizedBox(
             width: double.infinity,
             child: Column(
               children: [
@@ -215,10 +101,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   child: Image.asset("assets/images/img_user.png"),
                 ),
-                SizedBox(height: 20,),
+                const SizedBox(height: 20,),
                 Text(
                   "RnR_Admin",
-                  style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                  style: fontSemiBoldStyle(fontSize: 16),
                 )
               ],
             ),
@@ -230,20 +116,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   itemBuilder: (context, index) {
                     return InkWell(
                       onTap: () {
+                        Get.back();
+                        String text = dashboardController.drawerMenus[index];
+                        if(text == "Profile") {
+                            Get.toNamed(RouteName.profileScreen);
+                        } else if(text == "Home") {
+                          dashboardController.selectedTabIndex.value = 0;
+                        } else if(text == "Enquiry") {
+                          dashboardController.selectedTabIndex.value = 1;
+                        } else if(text == "Customer") {
+                          dashboardController.selectedTabIndex.value = 2;
+                        } else if(text == "Help") {
 
+                        } else if(text == "Logout") {
+                          _showLogoutAlert(context);
+                        }
                       },
                       child: Container(
                         width: double.infinity,
                         padding: EdgeInsets.only(left: 20,right: 20, top: 15, bottom: 15),
                         child: Row(
                           children: [
-                            Icon(index == 0 ? Icons.person_2 : (index == 1 ? Icons.help : Icons.logout)),
-                            SizedBox(width: 10,),
+                            Icon(dashboardController.drawerIcons[index]),
+                            const SizedBox(width: 10,),
                             Text(
                               dashboardController.drawerMenus[index],
-                              style: TextStyle(fontSize: 16,fontWeight: FontWeight.w600),
-                            ),
-                          ],
+                              style: fontSemiBoldStyle(fontSize: 14)),
+                          ]
                         ),
                       ),
                     );
@@ -253,5 +152,52 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ],
       )
     );
+  }
+
+  Future<bool?> _showExitConfirmationDialog(BuildContext context) async {
+    bool? shouldPop = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Confirmation'),
+        content: const Text('Do you really want to exit from app?'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('No', style: TextStyle(color: appRedColor),),
+            onPressed: () {
+              Get.back();
+            },
+          ),
+          TextButton(
+            child: const Text('Yes', style: TextStyle(color: appRedColor),),
+            onPressed: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
+        ],
+      ),
+    );
+
+    return shouldPop ?? false;
+  }
+
+  _showLogoutAlert(BuildContext context) async {
+    showDialog(context: context, builder: (context) => AlertDialog(
+      title: const Text("Logout?"),
+      content: const Text("Are you sure want to logout?"),
+      actions: <Widget>[
+        TextButton(
+          child: const Text('No', style: TextStyle(color: appRedColor),),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+        TextButton(
+          child: const Text('Yes', style: TextStyle(color: appRedColor),),
+          onPressed: () {
+            Get.offAllNamed(RouteName.loginScreen);
+          },
+        ),
+      ],
+    ));
   }
 }

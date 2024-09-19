@@ -7,6 +7,7 @@ import 'package:irujul_erp/utils/common_widgets/app_card_widget.dart';
 import 'package:irujul_erp/utils/common_widgets/app_text_field.dart';
 import 'package:irujul_erp/utils/common_widgets/customer_registration_steps.dart';
 import 'package:irujul_erp/utils/routes.dart';
+import 'package:irujul_erp/utils/text_styles.dart';
 
 class AddEnquiryStep1Screen extends StatefulWidget {
   const AddEnquiryStep1Screen({super.key});
@@ -29,7 +30,7 @@ class _AddEnquiryStep1ScreenState extends State<AddEnquiryStep1Screen> {
     return Scaffold(
 
       appBar: AppBar(
-        title: const Text("Add Enquiry"),
+        title: Text("Add Enquiry", style: fontSemiBoldStyle(fontSize: 18),),
         backgroundColor: primaryColor,
       ),
       body: GestureDetector(
@@ -42,8 +43,8 @@ class _AddEnquiryStep1ScreenState extends State<AddEnquiryStep1Screen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CustomerRegistrationSteps(currentSteps: [0]),
-              const Text("Customer Details",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),),
+              Text("Customer Details",
+                style: fontRegularStyle(fontWeight: FontWeight.w600, fontSize: 12),),
               SizedBox(height: 20,),
               Expanded(
                 child: SingleChildScrollView(
@@ -76,20 +77,36 @@ class _AddEnquiryStep1ScreenState extends State<AddEnquiryStep1Screen> {
         children: [
           AppTextField(
             controller: addEnquiryController.mobileNo,
-            placeholder: "Mobile Number",
+            placeholder: "Mobile Number*",
             maxLength: 10,
             keyboardType: TextInputType.number,
+            textInputAction: TextInputAction.next,
+            onTextChange: (text){
+              if(text.length == 10)  {
+                addEnquiryController.getCustomerDetailsApi();
+              } else {
+                addEnquiryController.dataReceivedFromApi.value = false;
+                addEnquiryController.name.text = "";
+                addEnquiryController.gender.text = "";
+                addEnquiryController.state.text = "";
+                addEnquiryController.city.text = "";
+                addEnquiryController.zipcode.text = "";
+              }
+            },
           ),
           const SizedBox(height: 10,),
-          AppTextField(
+          Obx(() => AppTextField(
+            makeDisable: addEnquiryController.dataReceivedFromApi.value,
             controller: addEnquiryController.name,
-            placeholder: "Customer Name"
-          ),
+            placeholder: "Customer Name*",
+            textInputAction: TextInputAction.next,
+          ),),
           const SizedBox(height: 10,),
           AppTextField(
             controller: addEnquiryController.gender,
-            placeholder: "Gender",
+            placeholder: "Gender*",
             isDropDown:  true,
+            textInputAction: TextInputAction.next,
             onTap: () {
               addEnquiryController.showGenderDropDown();
             }
@@ -97,7 +114,8 @@ class _AddEnquiryStep1ScreenState extends State<AddEnquiryStep1Screen> {
           const SizedBox(height: 10,),
           AppTextField(
             controller: addEnquiryController.state,
-            placeholder: "State",
+            placeholder: "State*",
+            textInputAction: TextInputAction.next,
             isDropDown: true,
             onTap: () {
               addEnquiryController.showStateDropDown();
@@ -106,8 +124,9 @@ class _AddEnquiryStep1ScreenState extends State<AddEnquiryStep1Screen> {
           const SizedBox(height: 10,),
           AppTextField(
             controller: addEnquiryController.city,
-            placeholder: "City",
+            placeholder: "City*",
             isDropDown: true,
+            textInputAction: TextInputAction.next,
             onTap: () {
               addEnquiryController.showCityDropDown();
             },
@@ -115,8 +134,9 @@ class _AddEnquiryStep1ScreenState extends State<AddEnquiryStep1Screen> {
           const SizedBox(height: 10,),
           AppTextField(
             controller: addEnquiryController.zipcode,
-            placeholder: "Zip Code",
+            placeholder: "Zip Code*",
             keyboardType:  TextInputType.number,
+            textInputAction: TextInputAction.done,
             maxLength: 6,
           ),
         ],

@@ -65,6 +65,9 @@ class UpdateEnquiryController extends GetxController {
       progress.text = followupStages[index].percentage ?? "";
       lostReason.text = "";
       selectedLostReasonId.value = "";
+      nextFollowUpDate.text = "";
+      nextFollowUpTime.text = "";
+      expectedClosureDate.text = "";
     });
   }
 
@@ -81,21 +84,23 @@ class UpdateEnquiryController extends GetxController {
       AppManager.showToast("Please select follow up stage");
       return false;
     }
-    if(selectedFollowupStageId == "5" && selectedLostReasonId.isEmpty) {
+    if(selectedFollowupStageId.value == "5" && selectedLostReasonId.isEmpty) {
       AppManager.showToast("Please select lost reason");
       return false;
     }
-    if(nextFollowUpDate.text.isEmpty)  {
-      AppManager.showToast("Please select Next follow up date");
-      return false;
-    }
-    if(nextFollowUpTime.text.isEmpty)  {
-      AppManager.showToast("Please select Next follow up time");
-      return false;
-    }
-    if(expectedClosureDate.text.isEmpty)  {
-      AppManager.showToast("Please select expected closure date");
-      return false;
+    if (!(selectedFollowupStageId.value == "5" || selectedFollowupStageId.value == "4")) {
+      if(nextFollowUpDate.text.isEmpty)  {
+        AppManager.showToast("Please select Next follow up date");
+        return false;
+      }
+      if(nextFollowUpTime.text.isEmpty)  {
+        AppManager.showToast("Please select Next follow up time");
+        return false;
+      }
+      if(expectedClosureDate.text.isEmpty)  {
+        AppManager.showToast("Please select expected closure date");
+        return false;
+      }
     }
     if(category.text.isEmpty)  {
       AppManager.showToast("Please select category");

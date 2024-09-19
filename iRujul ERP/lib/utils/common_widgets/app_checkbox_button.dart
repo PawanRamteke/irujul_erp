@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:irujul_erp/utils/text_styles.dart';
 
 class AppCheckboxButton extends StatelessWidget {
   String title  = "";
@@ -21,7 +22,7 @@ class AppCheckboxButton extends StatelessWidget {
             child: Image.asset(isSelected ?"assets/images/check.png" : "assets/images/unchecked.png"),
           ),
           SizedBox(width: 10,),
-          Expanded(child: Text(title))
+          Expanded(child: Text(title, style: fontRegularStyle(fontSize: 13),))
         ],
       ),
     );

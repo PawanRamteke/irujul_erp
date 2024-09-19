@@ -17,7 +17,7 @@ class ApiManager extends BaseApiManager {
           "Content-Type": "application/json",
           "Accept": "application/json"
         },
-      ).timeout(const Duration(seconds: 30));
+      ).timeout(const Duration(seconds: 10));
       responseJson = jsonDecode(response.body);
     } catch (e){
       print(e.toString());
@@ -37,7 +37,7 @@ class ApiManager extends BaseApiManager {
             "Authorization":  "Bearer $token"
           },
           body: jsonEncode(request)
-      ).timeout(const Duration(seconds: 30));
+      ).timeout(const Duration(seconds: 10));
       responseJson = jsonDecode(response.body);
     } catch (e) {
       print(e);

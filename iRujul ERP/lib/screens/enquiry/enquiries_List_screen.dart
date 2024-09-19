@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:irujul_erp/controllers/add_enquiry_controller.dart';
+import 'package:irujul_erp/controllers/enquiry_list_controller.dart';
 import 'package:irujul_erp/models/enquiry_list_model.dart';
 import 'package:irujul_erp/utils/app_manager.dart';
 import 'package:irujul_erp/utils/colors.dart';
 import 'package:irujul_erp/utils/common_widgets/app_card_widget.dart';
 import 'package:irujul_erp/utils/common_widgets/app_text_field.dart';
 import 'package:irujul_erp/utils/routes.dart';
+import 'package:irujul_erp/utils/text_styles.dart';
 
 class EnquiriesListScreen extends StatefulWidget {
   const EnquiriesListScreen({super.key});
@@ -17,14 +19,14 @@ class EnquiriesListScreen extends StatefulWidget {
 }
 
 class _EnquiriesListScreenState extends State<EnquiriesListScreen> {
-  AddEnquiryController  addEnquiryController = Get.put(AddEnquiryController());
+  EnquiryListController  enquiryController = Get.put(EnquiryListController());
 
   @override
   void initState() {
-    DateTime date = DateTime.now().subtract(const Duration(days: 30));
-    addEnquiryController.startDate.text = DateFormat('dd/MM/yyyy').format(date);
-    addEnquiryController.endDate.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
-    addEnquiryController.getEnquiryListApi();
+    DateTime date = DateTime.now().subtract(const Duration(days: 1));
+    enquiryController.startDate.text = DateFormat('dd/MM/yyyy').format(date);
+    enquiryController.endDate.text = DateFormat('dd/MM/yyyy').format(DateTime.now());
+    enquiryController.getEnquiryListApi();
     super.initState();
   }
   @override
@@ -45,20 +47,22 @@ class _EnquiriesListScreenState extends State<EnquiriesListScreen> {
             child: Row(
               children: [
                 Expanded(child: AppTextField(
-                  controller: addEnquiryController.startDate,
+                  controller: enquiryController.startDate,
                   placeholder: "Start Date",
                   isDatePicker: true,
+                  lastDate: DateTime.now(),
                   onDateSelect: (){
-                    addEnquiryController.getEnquiryListApi();
+                    enquiryController.getEnquiryListApi();
                   },
                 )),
                 const SizedBox(width: 20,),
                 Expanded(child: AppTextField(
-                  controller: addEnquiryController.endDate,
+                  controller: enquiryController.endDate,
                   placeholder: "End Date",
                   isDatePicker: true,
+                  lastDate: DateTime.now(),
                   onDateSelect: (){
-                    addEnquiryController.getEnquiryListApi();
+                    enquiryController.getEnquiryListApi();
                   },
                 )),
               ],
@@ -73,14 +77,14 @@ class _EnquiriesListScreenState extends State<EnquiriesListScreen> {
   }
 
   _enquiryList() {
-   return addEnquiryController.arrEnquiryList.isEmpty ?
+   return enquiryController.arrEnquiryList.isEmpty ?
      const Center(child: Text("No data available"),) :
     ListView.builder(
-        itemCount: addEnquiryController.arrEnquiryList.length,
+        itemCount: enquiryController.arrEnquiryList.length,
         itemBuilder: (context, index) {
           return Container(
-            padding: EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 5),
-            child: EnquiryListItem(model: addEnquiryController.arrEnquiryList.value[index])
+            padding: const EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 5),
+            child: EnquiryListItem(model: enquiryController.arrEnquiryList.value[index])
           );
         }
     );
@@ -107,24 +111,23 @@ class EnquiryListItem extends StatelessWidget {
                children: [
                  Row(
                    children: [
-                     const Text("Customer Name: ", style:  TextStyle(fontSize: 14, fontWeight: FontWeight.bold),),
+                     Text("Customer Name: ", style:  fontRegularStyle(fontSize: 14, fontWeight: FontWeight.w600),),
                      Expanded(child: Text(
                          model.header?.customerName ?? "-",
-                       style: TextStyle(fontSize: 16),
+                       style: fontRegularStyle(fontSize: 14),
                      ))
                    ],
                  ),
                  SizedBox(height: 5,),
                  Row(
                    children: [
-                     const Text("Mobile No: ", style:  TextStyle(fontSize: 14, fontWeight: FontWeight.bold),),
+                     Text("Mobile No: ", style:  fontRegularStyle(fontSize: 14, fontWeight: FontWeight.w600),),
                      Expanded(child: InkWell(
                        onTap: () {
 
                        },
-                       child: Text(
-                         model.header?.customerMobile ?? "-",
-                         style: TextStyle(fontSize: 16),
+                       child: Text(model.header?.customerMobile ?? "-",
+                         style: fontRegularStyle(fontSize: 14),
                        ),
                      ))
                    ],
@@ -132,26 +135,26 @@ class EnquiryListItem extends StatelessWidget {
                  SizedBox(height: 5,),
                  Row(
                    children: [
-                     const Text("Transaction Date: ", style:  TextStyle(fontSize: 14, fontWeight: FontWeight.bold),),
+                     Text("Transaction Date: ", style:  fontRegularStyle(fontSize: 14, fontWeight: FontWeight.w600),),
                      Expanded(child: Text(
                       AppManager().convertDateFormat( model.header?.tXNDate ?? "", "yyyy-MM-dd", "dd/MM/yyyy"),
-                       style: TextStyle(fontSize: 16),
+                       style: fontRegularStyle(fontSize: 14),
                      ))
                    ],
                  ),
-                 SizedBox(height: 5,),
+                 const SizedBox(height: 5,),
                  Row(
                    children: [
-                     const Text("Status: ", style:  TextStyle(fontSize: 14, fontWeight: FontWeight.bold),),
+                     Text("Status: ", style:  fontRegularStyle(fontSize: 14, fontWeight: FontWeight.w600),),
                      Container(
                        decoration: BoxDecoration(
                          borderRadius: BorderRadius.circular(5),
-                         color:  Colors.green,
+                         color: model.header?.status == "Closed" ? Colors.green : primaryColor,
                        ),
                        padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 3),
                        child: Text(
                          model.header?.status ?? "-",
-                         style: const TextStyle(fontSize: 12),
+                         style: fontRegularStyle(fontSize: 12),
                        ),
                      )
                    ],

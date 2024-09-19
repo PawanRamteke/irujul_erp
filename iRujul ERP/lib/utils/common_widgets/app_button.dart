@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:irujul_erp/utils/colors.dart';
+import 'package:irujul_erp/utils/text_styles.dart';
 
 class AppButton extends StatelessWidget {
   final String btnName;
@@ -32,7 +33,7 @@ class AppButton extends StatelessWidget {
         child: Center(
           child: Text(
             btnName,
-            style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 16),
+            style: fontRegularStyle(fontSize: 15, fontWeight: FontWeight.w500, color: Colors.white),
             textAlign: TextAlign.center,
           ),
         ),

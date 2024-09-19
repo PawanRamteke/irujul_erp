@@ -8,6 +8,7 @@ import 'package:irujul_erp/utils/common_widgets/app_button.dart';
 import 'package:irujul_erp/utils/common_widgets/app_checkbox_button.dart';
 import 'package:irujul_erp/utils/common_widgets/app_text_field.dart';
 import 'package:irujul_erp/utils/common_widgets/customer_registration_steps.dart';
+import 'package:irujul_erp/utils/text_styles.dart';
 
 class SalesCustomerScreen extends StatefulWidget {
   const SalesCustomerScreen({Key? key}) : super(key: key);
@@ -23,7 +24,7 @@ class _SalesCustomerScreenState extends State<SalesCustomerScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Customer"),
+        title: Text("Customer", style: fontSemiBoldStyle(fontSize: 18),),
       ),
       body: Column(
         children: [

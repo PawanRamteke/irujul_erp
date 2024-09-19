@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:irujul_erp/utils/ApiManager/Repository/repository.dart';
 import 'package:irujul_erp/utils/colors.dart';
+import 'package:irujul_erp/utils/text_styles.dart';
 
 class AppTextField extends StatelessWidget {
   final TextEditingController? controller;
@@ -20,8 +22,12 @@ class AppTextField extends StatelessWidget {
   final bool? isDatePicker;
   final bool? makeDisable;
   final DateTime? initialDate;
+  final DateTime? firstDate;
+  final DateTime? lastDate;
   final Function? onDateSelect;
+  final Function(String)? onTextChange;
   final bool? isTimePicker;
+  final TextInputAction? textInputAction;
   const AppTextField({
     super.key,
     this.controller,
@@ -38,23 +44,27 @@ class AppTextField extends StatelessWidget {
     this.makeDisable,
     this.initialDate,
     this.onDateSelect,
-    this.isTimePicker
+    this.isTimePicker,
+    this.firstDate,
+    this.lastDate,
+    this.onTextChange,
+    this.textInputAction
   });
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height,
+      height: height ?? 50,
       child: TextField(
         focusNode: (isDatePicker ?? false) || (makeDisable ?? false) || (isTimePicker ?? false) ? AlwaysDisabledFocusNode() : null,
         controller: controller,
         decoration: InputDecoration(
           border: InputBorder.none,
           labelText: placeholder,
-          labelStyle: const TextStyle(fontSize: 15),
+          labelStyle: fontRegularStyle(fontSize: 14),
           counterText: "",
           focusedBorder:  OutlineInputBorder(
             borderRadius: BorderRadius.circular(0),
-            borderSide: BorderSide(color: appRedColor, width: 0.5),
+            borderSide: const BorderSide(color: appRedColor, width: 0.5),
           ),
           enabledBorder:   OutlineInputBorder(
             borderRadius: BorderRadius.circular(0),
@@ -67,6 +77,9 @@ class AppTextField extends StatelessWidget {
         ),
         readOnly: isDropDown ?? false,
         obscureText: secureText ?? false,
+        inputFormatters: keyboardType == TextInputType.number ? [
+          FilteringTextInputFormatter.digitsOnly, // Restricts input to digits only
+        ] : null,
         onTap: () {
           if(makeDisable ?? false) {
             return;
@@ -87,6 +100,17 @@ class AppTextField extends StatelessWidget {
         maxLength: maxLength,
         keyboardType:  keyboardType,
         maxLines: maxLines ?? 1,
+        onChanged: (text) {
+          if(onTextChange != null) {
+            onTextChange!(text);
+          }
+        },
+        textInputAction: textInputAction,
+        onSubmitted: (v){
+          if(textInputAction == TextInputAction.next) {
+            FocusScope.of(context).nextFocus();
+          }
+        },
       ),
     );
   }
@@ -94,8 +118,8 @@ class AppTextField extends StatelessWidget {
     showDatePicker(
         context: Get.context!,
         initialDate: initialDate ?? DateTime.now(),
-        firstDate: DateTime.now(),
-        lastDate: DateTime(2040, 1),
+        firstDate: firstDate ?? DateTime(1901, 1),
+        lastDate: lastDate ?? DateTime(2040, 1),
         builder: (context,picker){
           return Theme(
             //TODO: change colors

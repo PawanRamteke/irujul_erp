@@ -67,6 +67,15 @@ class AppRepository {
     return response;
   }
 
+  Future<dynamic> getCustomerDetailsByMobileNoApi(String mobileNo) async {
+    dynamic request = {
+      "module": "contacts",
+      "mobileNo": mobileNo,
+    };
+    var response = await apiManager.postApi("${AppManager.shared.appUrl}$getRecordsApi", request);
+    return response;
+  }
+
   Future<dynamic> getCategoryAPI() async {
     dynamic request = {
       "module": "category"
@@ -153,4 +162,5 @@ class AppRepository {
     var response = await apiManager.postApi("${AppManager.shared.appUrl}$updateEnquiryApi", request);
     return response;
   }
+
 }

@@ -1,10 +1,9 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
-import 'package:irujul_erp/models/enquiry_list_model.dart';
+import 'package:irujul_erp/dialogs/enquiry_product_list.dart';
 import 'package:irujul_erp/models/product_category_model.dart';
-import 'package:irujul_erp/screens/add_enquiry_step_2_screen.dart';
+import 'package:irujul_erp/screens/enquiry/add_enquiry_step_2_screen.dart';
 import 'package:irujul_erp/utils/ApiManager/Repository/repository.dart';
 import 'package:irujul_erp/utils/app_manager.dart';
 
@@ -13,6 +12,8 @@ class AddEnquiryController extends GetxController {
   final RxList<Item> items = RxList<Item>();
 
   AppRepository appRepository = AppRepository();
+
+  ScrollController scrollController = ScrollController();
 
   ProductCategoryModel? _selectedCategory;
   set selectedCategory(ProductCategoryModel value) {
@@ -44,12 +45,8 @@ class AddEnquiryController extends GetxController {
     getItemInfoApi();
   }
 
-  TextEditingController startDate = TextEditingController();
-  TextEditingController endDate = TextEditingController();
-
+  RxList<ProductCategoryModel> productList = RxList<ProductCategoryModel>();
   RxList<ProductCategoryModel> selectedItems = RxList<ProductCategoryModel>();
-
-  RxList<EnquiryListModel> arrEnquiryList = RxList<EnquiryListModel>();
 
   TextEditingController mobileNo = TextEditingController();
   TextEditingController name = TextEditingController();
@@ -75,29 +72,37 @@ class AddEnquiryController extends GetxController {
   List<ProductCategoryModel> stateList = [];
   List<String> cityList = [];
   List<String> sourceList = [];
+  RxBool dataReceivedFromApi = false.obs;
+  getCustomerDetailsApi() async {
+    dataReceivedFromApi.value = false;
+    dynamic response = await appRepository.getCustomerDetailsByMobileNoApi(mobileNo.text!);
+    if(response != null && response["Data"] != null) {
+        List data = response["Data"] ?? [];
+        if(data.isNotEmpty) {
+          dynamic? contact = data[0]["Contact"];
+          String n = contact["Name"] ?? "";
+          if(n.isNotEmpty) {
+            dataReceivedFromApi.value = true;
+          }
+          name.text = n;
+          gender.text = contact["Gender"] ?? "";
 
-  getEnquiryListApi() async {
+          List addressList =  data[0]["Address"] ?? [];
+          if(addressList.isNotEmpty)  {
+            dynamic? address  = addressList[0];
+            String st = address["State"] ?? [];
+            state.text = st;
+            city.text  = address["City"];
+            zipcode.text = address["ZipCode"] ?? "";
 
-    if(startDate.text.isEmpty || endDate.text.isEmpty) {
-        return;
+            if(st.isNotEmpty) {
+              String stateId = stateList.firstWhereOrNull((v) => v.name == st)?.iD ?? "";
+              getCityListApi(stateId);
+            }
+          }
+        }
     }
-    arrEnquiryList.clear();
-    arrEnquiryList.refresh();
-
-    String sDate = AppManager().convertDateFormat(startDate.text!, "dd/MM/yyyy", "yyyy-MM-dd");
-    String eDate = AppManager().convertDateFormat(endDate.text!, "dd/MM/yyyy", "yyyy-MM-dd");
-
-    dynamic response = await appRepository.getEnquiryListApi(sDate, eDate);
-    if(response["Data"] != null) {
-      List<dynamic> list = response["Data"];
-      for (var json in list) {
-        arrEnquiryList.add(EnquiryListModel.fromJson(json));
-      }
-    }
-    arrEnquiryList.refresh();
   }
-
-
   getCategoryApi() async {
     dynamic response = await appRepository.getCategoryAPI();
     List<ProductCategoryModel> arrCategories = [];
@@ -107,7 +112,7 @@ class AddEnquiryController extends GetxController {
       for (var json in list) {
         arrCategories.add(ProductCategoryModel.fromJson(json));
       }
-      items.add(Item(headerValue: "Business Unit", expandedValue: arrCategories));
+      items.add(Item(headerValue: "Category", expandedValue: arrCategories));
       items.refresh();
     }
     return response;
@@ -187,12 +192,18 @@ class AddEnquiryController extends GetxController {
 
   getItemInfoApi() async {
     dynamic response = await appRepository.getSelectedItemInfoApi(_selectedCategory?.iD ?? "", _selectedBrand?.iD ?? "", _selectedFamily?.iD ?? "", _selectedCapacity?.iD ?? "", _selectedColor?.iD ?? "");
-    //List<ProductCategoryModel> arrItems = [];
+    productList.value.clear();
     if(response["Data"] != null) {
       List<dynamic> list = response["Data"];
       for (var json in list) {
         ProductCategoryModel model = ProductCategoryModel.fromJson(json);
-        selectedItems.value.add(model);
+        productList.value.add(model);
+       // selectedItems.refresh();
+      }
+      if(productList.value.length > 1) {
+        showEnquiryProductList();
+      } else {
+        selectedItems.value.addAll(productList.value);
         selectedItems.refresh();
       }
     }
@@ -300,8 +311,10 @@ class AddEnquiryController extends GetxController {
     if (response["status"] != null && response["status"] == 200 || response["status"] == 201) {
       AppManager.showToast(response["message"]);
       return true;
+    } else {
+      AppManager.showToast("Something went wrong!. Please try again later");
+      return false;
     }
-    return false;
   }
 
   showGenderDropDown() {
@@ -324,7 +337,7 @@ class AddEnquiryController extends GetxController {
       ProductCategoryModel model = stateList[index];
       city.text = "";
       getCityListApi(model.iD ?? "");
-    });
+    }, true);
   }
 
   showCityDropDown() {
@@ -338,7 +351,7 @@ class AddEnquiryController extends GetxController {
     }
     AppManager.shared.showActionSheet(cityList,"Select City", (index) => {
       city.text = cityList[index]
-    });
+    }, true);
   }
 
   showSourceDropDown() {
@@ -373,5 +386,24 @@ class AddEnquiryController extends GetxController {
       return false;
     }
     return true;
+  }
+
+  showEnquiryProductList() {
+    Get.bottomSheet(Obx(() => EnquiryProductList(productList: productList.value, onSelect: (int index) {
+      productList.value[index].isSelected = !productList.value[index].isSelected!;
+      productList.refresh();
+    }, onDone: () {
+        selectedItems.value.addAll(productList.where((p) => p.isSelected!).toList());
+        selectedItems.refresh();
+        Get.back();
+    },)), isScrollControlled: true);
+  }
+
+  void scrollToBottom() {
+    scrollController.animateTo(
+      scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.easeOut,
+    );
   }
 }

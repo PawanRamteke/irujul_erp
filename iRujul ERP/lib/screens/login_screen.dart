@@ -3,16 +3,21 @@ import 'dart:ui';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:irujul_erp/controllers/login_controller.dart';
 import 'package:irujul_erp/dialogs/pin_verification_dialog.dart';
+import 'package:irujul_erp/utils/ApiManager/prefernces.dart';
 import 'package:irujul_erp/utils/colors.dart';
 import 'package:irujul_erp/utils/common_widgets/app_button.dart';
 import 'package:irujul_erp/utils/common_widgets/app_card_widget.dart';
 import 'package:irujul_erp/utils/common_widgets/app_checkbox_button.dart';
 import 'package:irujul_erp/utils/common_widgets/app_text_field.dart';
 import 'package:irujul_erp/utils/routes.dart';
+
+import '../utils/app_manager.dart';
+import '../utils/text_styles.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -27,9 +32,21 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-   // loginController.userName.text = "rnr_api_test";
-  //  loginController.password.text = "Rnr_api_test_13rt";
-    _showPinVerificationDialog();
+    //loginController.userName.text = "rnr_api_test";
+    //loginController.password.text = "Rnr_api_test_13rt";
+
+    loginController.checkForUsernameFromPreference();
+    _checkForServerPinDialog();
+  }
+
+  _checkForServerPinDialog() async {
+    bool showDialog = await Preferences.shouldShowServerPinDialog();
+    if(showDialog) {
+      _showPinVerificationDialog();
+    } else {
+      dynamic data = await Preferences.getClientServerData();
+      AppManager.shared.appUrl = data["ClientURL"];
+    }
   }
 
   _showPinVerificationDialog() async {
@@ -98,11 +115,13 @@ class _LoginScreenState extends State<LoginScreen> {
                   AppTextField(
                     controller: loginController.userName,
                     placeholder: "Username".tr,
+                    textInputAction: TextInputAction.next,
                   ),
                   SizedBox(height: 20,),
                   AppTextField(
                       controller: loginController.password,
                       placeholder: "Password".tr,
+                    textInputAction: TextInputAction.done,
                     secureText: true,
                   ),
                   SizedBox(height: 20,),
@@ -126,8 +145,8 @@ class _LoginScreenState extends State<LoginScreen> {
             width: 80,
             height: 40,
             color: primaryColor,
-            child: const Center(
-              child: Text("Login", style: TextStyle(fontWeight: FontWeight.w600),),
+            child: Center(
+              child: Text("Login", style: fontBoldStyle(color: Colors.black, fontSize: 14)),
             ),
           ),
           // Container(

@@ -7,9 +7,11 @@ import 'package:irujul_erp/utils/common_widgets/app_checkbox_button.dart';
 import 'package:irujul_erp/utils/common_widgets/app_loader.dart';
 import 'package:irujul_erp/utils/common_widgets/app_text_field.dart';
 import 'package:irujul_erp/utils/routes.dart';
+import 'package:irujul_erp/utils/text_styles.dart';
 
-import '../utils/colors.dart';
-import '../utils/common_widgets/customer_registration_steps.dart';
+import '../../utils/colors.dart';
+import '../../utils/common_widgets/customer_registration_steps.dart';
+
 
 class AddEnquiryStep3Screen extends StatefulWidget {
   const AddEnquiryStep3Screen({Key? key}) : super(key: key);
@@ -31,7 +33,7 @@ class _AddEnquiryStep3ScreenState extends State<AddEnquiryStep3Screen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Add Enquiry"),
+        title: Text("Add Enquiry", style: fontSemiBoldStyle(fontSize: 18),),
         backgroundColor: primaryColor,
       ),
       body: SafeArea(
@@ -41,7 +43,7 @@ class _AddEnquiryStep3ScreenState extends State<AddEnquiryStep3Screen> {
            crossAxisAlignment: CrossAxisAlignment.end,
            children: [
              CustomerRegistrationSteps(currentSteps: const [0,1,2]),
-             const Text("Enquiry Details", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),),
+             Text("Enquiry Details", style: fontRegularStyle(fontWeight: FontWeight.w600, fontSize: 12),),
              SizedBox(height: 20,),
              Expanded(child: Container(
                child: SingleChildScrollView(
@@ -101,6 +103,7 @@ class _AddEnquiryStep3ScreenState extends State<AddEnquiryStep3Screen> {
                            controller: addEnquiryController.remark,
                            placeholder: "Remark",
                            maxLines: 4,
+                           height: 100,
                          ),
 
                          SizedBox(height: 20,),

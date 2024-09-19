@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:irujul_erp/utils/common_widgets/app_card_widget.dart';
+import 'package:irujul_erp/utils/text_styles.dart';
 
 class SalesCustomerListScreen extends StatefulWidget {
   const SalesCustomerListScreen({Key? key}) : super(key: key);
@@ -13,7 +14,7 @@ class _SalesCustomerListScreenState extends State<SalesCustomerListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Customer List"),
+        title: Text("Customer List", style: fontSemiBoldStyle(fontSize: 18),),
       ),
       body: ListView.builder(
         itemCount: 10,

@@ -1,11 +1,11 @@
 
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/routes/get_route.dart';
-import 'package:irujul_erp/screens/add_enquiry_step_1_screen.dart';
-import 'package:irujul_erp/screens/add_enquiry_step_2_screen.dart';
-import 'package:irujul_erp/screens/add_enquiry_step_3_screen.dart';
+import 'package:irujul_erp/screens/enquiry/add_enquiry_step_1_screen.dart';
+import 'package:irujul_erp/screens/enquiry/add_enquiry_step_2_screen.dart';
+import 'package:irujul_erp/screens/enquiry/add_enquiry_step_3_screen.dart';
 import 'package:irujul_erp/screens/dashboard_screeen.dart';
 import 'package:irujul_erp/screens/login_screen.dart';
+import 'package:irujul_erp/screens/profile_screen.dart';
 import 'package:irujul_erp/screens/sales/sales_customer_list_screen.dart';
 import 'package:irujul_erp/screens/sales/sales_customer_screen.dart';
 import 'package:irujul_erp/screens/splash_screen.dart';
@@ -15,6 +15,7 @@ class RouteName {
   static const splashScreen = '/splash_screen';
   static const loginScreen = '/login_screen';
   static const dashboardScreen = '/dashboard_screen';
+  static const profileScreen = "/profile_screen";
 
   //Sales
   static const salesCustomerScreen = '/sales_customer_screen';
@@ -66,5 +67,9 @@ final getPages = [
   GetPage(
       name: RouteName.updateEnquiryScreen,
       page: () => const UpdateEnquiryScreen()
+  ),
+  GetPage(
+      name: RouteName.profileScreen,
+      page: () => const ProfileScreen()
   ),
 ];
