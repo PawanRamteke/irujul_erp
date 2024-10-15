@@ -22,19 +22,14 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-                child: Center(
-                    child: Image.asset("assets/images/rujul-logo-login.png"),
-                )
-            ),
-            Text('copyright_text'.tr)
-          ],
+    return  Scaffold(
+      body: Center(
+          child: SizedBox(
+            width: 300,
+            height: 300,
+            child: Image.asset("assets/images/iplug_icon.jpg"),
+          ),
         ),
-      ),
     );
   }
 }

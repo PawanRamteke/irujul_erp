@@ -85,12 +85,12 @@ class _AddEnquiryStep1ScreenState extends State<AddEnquiryStep1Screen> {
               if(text.length == 10)  {
                 addEnquiryController.getCustomerDetailsApi();
               } else {
-                addEnquiryController.dataReceivedFromApi.value = false;
-                addEnquiryController.name.text = "";
-                addEnquiryController.gender.text = "";
-                addEnquiryController.state.text = "";
-                addEnquiryController.city.text = "";
-                addEnquiryController.zipcode.text = "";
+                // addEnquiryController.dataReceivedFromApi.value = false;
+                // addEnquiryController.name.text = "";
+                // addEnquiryController.gender.text = "";
+                // addEnquiryController.state.text = "";
+                // addEnquiryController.city.text = "";
+                // addEnquiryController.zipcode.text = "";
               }
             },
           ),

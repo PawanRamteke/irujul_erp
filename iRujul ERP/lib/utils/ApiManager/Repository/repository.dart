@@ -76,6 +76,14 @@ class AppRepository {
     return response;
   }
 
+  Future<dynamic> getBusinessUnitAPI() async {
+    dynamic request = {
+      "module": "business_unit"
+    };
+    var response = await apiManager.postApi("${AppManager.shared.appUrl}$getItemInfoApi", request);
+    return response;
+  }
+
   Future<dynamic> getCategoryAPI() async {
     dynamic request = {
       "module": "category"
@@ -160,6 +168,20 @@ class AppRepository {
 
   Future<dynamic> updateEnquiryAPI(dynamic request) async {
     var response = await apiManager.postApi("${AppManager.shared.appUrl}$updateEnquiryApi", request);
+    return response;
+  }
+
+  Future<dynamic> getSubCategoryAPI(String categoryID) async {
+    dynamic request = {
+      "module": "sub_category",
+      "CategoryID": categoryID
+    };
+    var response = await apiManager.postApi("${AppManager.shared.appUrl}$getItemInfoApi", request);
+    return response;
+  }
+
+  Future<dynamic> getStockReportAPI(dynamic request) async {
+    var response = await apiManager.postApi("${AppManager.shared.appUrl}$getRecordsApi", request);
     return response;
   }
 

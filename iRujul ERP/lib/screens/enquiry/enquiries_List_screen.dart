@@ -79,27 +79,39 @@ class _EnquiriesListScreenState extends State<EnquiriesListScreen> {
   _enquiryList() {
    return enquiryController.arrEnquiryList.isEmpty ?
      const Center(child: Text("No data available"),) :
-    ListView.builder(
-        itemCount: enquiryController.arrEnquiryList.length,
-        itemBuilder: (context, index) {
-          return Container(
-            padding: const EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 5),
-            child: EnquiryListItem(model: enquiryController.arrEnquiryList.value[index])
-          );
-        }
+    RefreshIndicator(
+      onRefresh: () {
+        return enquiryController.getEnquiryListApi();
+      },
+      child: ListView.builder(
+          itemCount: enquiryController.arrEnquiryList.length,
+          itemBuilder: (context, index) {
+            return Container(
+              padding: const EdgeInsets.only(left: 20, right: 20, top: 5, bottom: 5),
+              child: EnquiryListItem(model: enquiryController.arrEnquiryList.value[index],
+                onCallClicked: (String mobile) {
+                  enquiryController.makePhoneCall(mobile);
+                }
+              )
+            );
+          }
+      ),
     );
   }
 }
 
 class EnquiryListItem extends StatelessWidget {
   final EnquiryListModel model;
-   const EnquiryListItem({super.key, required this.model,});
+  final Function(String) onCallClicked;
+   const EnquiryListItem({super.key, required this.model, required this.onCallClicked,});
   @override
   Widget build(BuildContext context) {
    return InkWell(
      onTap: (){
+       if(model.header?.status == "Closed") {
+         return;
+       }
        Get.toNamed(RouteName.updateEnquiryScreen, arguments: {"enquiryData": model});
-
      },
      child: AppCardWidget(
        padding: EdgeInsets.all(20),
@@ -124,7 +136,7 @@ class EnquiryListItem extends StatelessWidget {
                      Text("Mobile No: ", style:  fontRegularStyle(fontSize: 14, fontWeight: FontWeight.w600),),
                      Expanded(child: InkWell(
                        onTap: () {
-
+                         onCallClicked(model.header?.customerMobile ?? "");
                        },
                        child: Text(model.header?.customerMobile ?? "-",
                          style: fontRegularStyle(fontSize: 14),
@@ -163,7 +175,10 @@ class EnquiryListItem extends StatelessWidget {
              ),
            ),
            //Container(color: Colors.yellow,width: 20, height: 20,)
-           const Icon(Icons.arrow_forward_ios_outlined,color: Colors.grey,)
+           Visibility(
+             visible: model.header?.status != "Closed",
+               child: const Icon(Icons.arrow_forward_ios_outlined,color: Colors.grey,)
+           )
          ],
        )
      ),

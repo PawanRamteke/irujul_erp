@@ -72,13 +72,11 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(height: 50,),
                         SizedBox(
-                          width: double.infinity,
-                          height: 90,
-                          child: Image.asset("assets/images/rujul-logo-login.png"),
+                          width: 150,
+                          height: 150,
+                          child: Image.asset("assets/images/iplug_icon.jpg"),
                         ),
-                        SizedBox(height: 30,),
                         FlipCard(
                             key: loginController.cardKey,
                             flipOnTouch: false,

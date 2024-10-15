@@ -9,6 +9,8 @@ import 'package:irujul_erp/utils/routes.dart';
 import 'package:irujul_erp/utils/text_styles.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
+import '../utils/app_manager.dart';
+
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
 
@@ -37,11 +39,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: primaryColor,
-        title: SizedBox(
-          height: 50,
-          width: 200,
-          child: Image.asset("assets/images/rujul-logo-login.png"),
-        ),
+        title: Obx(() => Text(dashboardController.selectedTabIndex.value == 0 ? "Home" : (dashboardController.selectedTabIndex.value == 1 ? "Enquiries" : "Stock"),
+          style: fontRegularStyle(fontSize: 18),))
       ),
       drawer: Drawer(
         child: _drawerMenu(),
@@ -62,8 +61,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               label: "Enquiries"
           ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.add_circle),
-              label: "Customer"
+              icon: Icon(Icons.shopping_bag),
+              label: "Stock"
           )
         ],
         currentIndex: dashboardController.selectedTabIndex.value,
@@ -103,7 +102,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 const SizedBox(height: 20,),
                 Text(
-                  "RnR_Admin",
+                  AppManager.shared.loginModel?.defaultExecutiveName ?? "-",
                   style: fontSemiBoldStyle(fontSize: 16),
                 )
               ],
@@ -124,7 +123,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           dashboardController.selectedTabIndex.value = 0;
                         } else if(text == "Enquiry") {
                           dashboardController.selectedTabIndex.value = 1;
-                        } else if(text == "Customer") {
+                        } else if(text == "Stock") {
                           dashboardController.selectedTabIndex.value = 2;
                         } else if(text == "Help") {
 

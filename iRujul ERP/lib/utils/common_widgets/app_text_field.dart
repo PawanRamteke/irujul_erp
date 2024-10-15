@@ -25,6 +25,7 @@ class AppTextField extends StatelessWidget {
   final DateTime? firstDate;
   final DateTime? lastDate;
   final Function? onDateSelect;
+  final Function? onSubmitted;
   final Function(String)? onTextChange;
   final bool? isTimePicker;
   final TextInputAction? textInputAction;
@@ -48,7 +49,8 @@ class AppTextField extends StatelessWidget {
     this.firstDate,
     this.lastDate,
     this.onTextChange,
-    this.textInputAction
+    this.textInputAction,
+    this.onSubmitted
   });
   @override
   Widget build(BuildContext context) {
@@ -109,6 +111,9 @@ class AppTextField extends StatelessWidget {
         onSubmitted: (v){
           if(textInputAction == TextInputAction.next) {
             FocusScope.of(context).nextFocus();
+          }
+          if(onSubmitted != null) {
+            onSubmitted!();
           }
         },
       ),

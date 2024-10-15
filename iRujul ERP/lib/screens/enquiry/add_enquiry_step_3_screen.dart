@@ -81,7 +81,7 @@ class _AddEnquiryStep3ScreenState extends State<AddEnquiryStep3Screen> {
                          SizedBox(height: 40,),
                          AppTextField(
                            controller: addEnquiryController.source,
-                           placeholder: "Source",
+                           placeholder: "Source*",
                            isDropDown: true,
                            onTap: () {
                              addEnquiryController.showSourceDropDown();
@@ -91,7 +91,7 @@ class _AddEnquiryStep3ScreenState extends State<AddEnquiryStep3Screen> {
                          SizedBox(height: 20,),
                          AppTextField(
                            controller: addEnquiryController.category,
-                           placeholder: "Category",
+                           placeholder: "Category*",
                            isDropDown: true,
                            onTap: () {
                              addEnquiryController.showLeadCategoryDropDown();
@@ -101,7 +101,7 @@ class _AddEnquiryStep3ScreenState extends State<AddEnquiryStep3Screen> {
                          SizedBox(height: 20,),
                          AppTextField(
                            controller: addEnquiryController.remark,
-                           placeholder: "Remark",
+                           placeholder: "Remark*",
                            maxLines: 4,
                            height: 100,
                          ),

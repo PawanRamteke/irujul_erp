@@ -90,7 +90,7 @@ class AddEnquiryController extends GetxController {
           List addressList =  data[0]["Address"] ?? [];
           if(addressList.isNotEmpty)  {
             dynamic? address  = addressList[0];
-            String st = address["State"] ?? [];
+            String st = address["StateName"] ?? [];
             state.text = st;
             city.text  = address["City"];
             zipcode.text = address["ZipCode"] ?? "";
@@ -262,6 +262,11 @@ class AddEnquiryController extends GetxController {
   }
 
   createEnquiryApi() async {
+
+    if(!validateForStep3()) {
+      return false;
+    }
+
     List<dynamic> items = [];
     for (var item in selectedItems) {
       dynamic itemJson =  {
@@ -289,7 +294,7 @@ class AddEnquiryController extends GetxController {
         "TXNName":"",
         "BranchRefCode": AppManager.shared.loginModel?.branchAPIRefCode ?? "",
         "ExecutiveCode": AppManager.shared.loginModel?.defaultExecutiveCode ?? "",
-        "VoucherType": "1907",
+        "VoucherType": "1440",
         "VendorID": "",
         "CustomerName": name.text,
         "CustomerMobile": mobileNo.text,
@@ -383,6 +388,22 @@ class AddEnquiryController extends GetxController {
     }
     if(zipcode.text.length < 6) {
       AppManager.showToast("Please enter valid zip code");
+      return false;
+    }
+    return true;
+  }
+
+  validateForStep3(){
+    if(source.text.trim().isEmpty) {
+      AppManager.showToast("Please select source");
+      return false;
+    }
+    if(category.text.trim().isEmpty) {
+      AppManager.showToast("Please select category");
+      return false;
+    }
+    if(remark.text.trim().isEmpty) {
+      AppManager.showToast("Please enter remark");
       return false;
     }
     return true;

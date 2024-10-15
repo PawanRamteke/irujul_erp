@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../models/enquiry_list_model.dart';
 import '../utils/ApiManager/Repository/repository.dart';
@@ -34,4 +35,12 @@ class EnquiryListController extends GetxController {
     arrEnquiryList.refresh();
   }
 
+  Future<void> makePhoneCall(String url) async {
+    Uri uri = Uri.parse('tel:$url');
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    } else {
+      throw 'Could not launch $uri';
+    }
+  }
 }

@@ -9,6 +9,7 @@ import 'package:irujul_erp/screens/profile_screen.dart';
 import 'package:irujul_erp/screens/sales/sales_customer_list_screen.dart';
 import 'package:irujul_erp/screens/sales/sales_customer_screen.dart';
 import 'package:irujul_erp/screens/splash_screen.dart';
+import 'package:irujul_erp/screens/stocks/stock_list_screen.dart';
 import 'package:irujul_erp/screens/update_enquiry_screen.dart';
 
 class RouteName {
@@ -27,6 +28,8 @@ class RouteName {
   static const addEnquiryStep3Screen = "/add_enquiry_step3_screen";
 
   static const updateEnquiryScreen ="/update_enquiry_screen";
+
+  static const stockListScreen = "/stock_list_screen";
 }
 
 final getPages = [
@@ -71,5 +74,9 @@ final getPages = [
   GetPage(
       name: RouteName.profileScreen,
       page: () => const ProfileScreen()
+  ),
+  GetPage(
+      name: RouteName.stockListScreen,
+      page: () => const StockListScreen()
   ),
 ];
