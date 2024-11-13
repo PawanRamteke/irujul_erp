@@ -72,6 +72,10 @@ class LoginController extends GetxController {
                 }
                 BranchModel selBranch = arrBranch.firstWhere((element) => element.branchName == branch.text!);
                 AppManager.shared.branchModel = selBranch;
+                AppManager.shared.loginModel?.branchID = AppManager.shared.branchModel?.branchID;
+                AppManager.shared.loginModel?.branchName = AppManager.shared.branchModel?.branchName;
+                AppManager.shared.loginModel?.companyID = AppManager.shared.branchModel?.companyID;
+                AppManager.shared.loginModel?.branchAPIRefCode = AppManager.shared.branchModel?.branchAPIRefCode;
                 Get.back(closeOverlays: true);
                 Get.offAllNamed(RouteName.dashboardScreen);
               })
@@ -145,6 +149,11 @@ class LoginController extends GetxController {
     }
     if(arrBranch.length == 1) {
       AppManager.shared.branchModel = arrBranch[0];
+      AppManager.shared.loginModel?.branchID = AppManager.shared.branchModel?.branchID;
+      AppManager.shared.loginModel?.branchName = AppManager.shared.branchModel?.branchName;
+      AppManager.shared.loginModel?.companyID = AppManager.shared.branchModel?.companyID;
+      AppManager.shared.loginModel?.branchAPIRefCode = AppManager.shared.branchModel?.branchAPIRefCode;
+
       Get.offAllNamed(RouteName.dashboardScreen);
     } else {
       showSelectBranchView();

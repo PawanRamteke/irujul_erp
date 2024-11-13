@@ -45,4 +45,14 @@ class AppManager {
   static showToast(String message) {
     Fluttertoast.showToast(msg: message, timeInSecForIosWeb: 3);
   }
+
+  Future<bool> isConnectedToInternet() async {
+    List<ConnectivityResult> result;
+    try {
+      result = await _connectivity.checkConnectivity();
+    } catch (e) {
+      result = [ConnectivityResult.none];
+    }
+    return result[0] != ConnectivityResult.none;
+  }
 }

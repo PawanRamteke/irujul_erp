@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:irujul_erp/models/dashboard_model.dart';
 import 'package:irujul_erp/utils/ApiManager/Repository/repository.dart';
+import 'package:irujul_erp/utils/app_manager.dart';
 import 'package:irujul_erp/utils/common_widgets/app_loader.dart';
 
 class HomeController extends GetxController {
@@ -19,7 +20,10 @@ class HomeController extends GetxController {
       todaysData.value = model.rows ?? [];
       branchWiseData?.value = model.grid!;
       graphData?.value = model.graph!;
+    } else if (response["error"] != null) {
+      AppManager.showToast(response["error"]["message"] ?? "");
     }
+
     AppLoader.hide();
   }
 }

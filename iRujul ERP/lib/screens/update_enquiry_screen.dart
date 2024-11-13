@@ -196,7 +196,7 @@ class _UpdateEnquiryScreenState extends State<UpdateEnquiryScreen> {
                 ),
                 const SizedBox(height: 10,),
                 Obx(() => Visibility(
-                  visible: updateEnquiryController.selectedFollowupStageId.value == "5",
+                  visible: updateEnquiryController.isLostStage.value,
                   child: Column(
                     children: [
                       AppTextField(
@@ -224,7 +224,7 @@ class _UpdateEnquiryScreenState extends State<UpdateEnquiryScreen> {
                 // ),
                // const SizedBox(height: 10,),
                 Obx(() => Visibility(
-                    visible: !(updateEnquiryController.selectedFollowupStageId.value == "5" || updateEnquiryController.selectedFollowupStageId.value == "4"),
+                    visible: !(updateEnquiryController.isLostStage.value || updateEnquiryController.isWonStage.value),
                     child: Column(
                       children: [
                         AppTextField(

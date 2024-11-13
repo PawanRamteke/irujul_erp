@@ -25,6 +25,8 @@ class UpdateEnquiryController extends GetxController {
   List<LostReasonModel> lostReasons = [];
   EnquiryListModel? model;
   RxString selectedFollowupStageId = "".obs;
+  RxBool isLostStage = false.obs;
+  RxBool isWonStage = false.obs;
   RxString selectedLostReasonId = "".obs;
 
   getLeadCategoryApi() async {
@@ -62,6 +64,8 @@ class UpdateEnquiryController extends GetxController {
     AppManager.shared.showActionSheet(list,"Select Follow Up Stage", (index) {
       followUpStage.text = list[index];
       selectedFollowupStageId.value = followupStages[index].iD ?? "";
+      isLostStage.value = followupStages[index].isFinalLossStage == "1";
+      isWonStage.value = followupStages[index].isFinalWonStage == "1";
       progress.text = followupStages[index].percentage ?? "";
       lostReason.text = "";
       selectedLostReasonId.value = "";
@@ -84,11 +88,11 @@ class UpdateEnquiryController extends GetxController {
       AppManager.showToast("Please select follow up stage");
       return false;
     }
-    if(selectedFollowupStageId.value == "5" && selectedLostReasonId.isEmpty) {
+    if(isLostStage.value && selectedLostReasonId.isEmpty) {
       AppManager.showToast("Please select lost reason");
       return false;
     }
-    if (!(selectedFollowupStageId.value == "5" || selectedFollowupStageId.value == "4")) {
+    if (!(isLostStage.value || isWonStage.value)) {
       if(nextFollowUpDate.text.isEmpty)  {
         AppManager.showToast("Please select Next follow up date");
         return false;
