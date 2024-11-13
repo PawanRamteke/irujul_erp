@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -12,6 +13,8 @@ import '../models/branch_model.dart';
 
 class AppManager {
   static final AppManager shared = AppManager._internal();
+  final Connectivity _connectivity = Connectivity();
+
   String appUrl = "";
   LoginModel? loginModel;
   BranchModel?  branchModel;

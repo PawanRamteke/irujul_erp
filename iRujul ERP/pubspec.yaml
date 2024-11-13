@@ -25,6 +25,7 @@ dependencies:
   google_fonts: ^6.2.1
   url_launcher: ^6.3.0
   flutter_launcher_icons: ^0.14.1
+  connectivity_plus: ^6.1.0
 
 flutter_launcher_icons:
   android: true
